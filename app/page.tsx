@@ -10,10 +10,16 @@ export default function Home() {
   const container = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
+    // Animate letters
+    gsap.fromTo('.gsap-letter',
+      { opacity: 0, y: 40 },
+      { opacity: 1, y: 0, duration: 0.8, stagger: 0.02, ease: 'power3.out', delay: 0.2 }
+    );
+
     // Fade up the content inside the hero
     gsap.fromTo('.gsap-hero-element',
       { opacity: 0, y: 30 },
-      { opacity: 1, y: 0, duration: 1.2, stagger: 0.15, ease: 'power3.out', delay: 0.2 }
+      { opacity: 1, y: 0, duration: 1.2, stagger: 0.15, ease: 'power3.out', delay: 0.8 }
     );
     // Fade in the background pattern
     gsap.fromTo('.gsap-bg-pattern',
@@ -21,6 +27,14 @@ export default function Home() {
       { opacity: 1, duration: 2, ease: 'power2.out', delay: 0.5 }
     );
   }, { scope: container });
+
+  const splitText = (text: string) => {
+    return text.split("").map((char, index) => (
+      <span key={index} className="inline-block gsap-letter">
+        {char === " " ? "\u00A0" : char}
+      </span>
+    ));
+  };
 
   return (
     <div ref={container} className="min-h-screen bg-bg-main text-text-main font-faktum selection:bg-brand/20 selection:text-brand flex flex-col relative overflow-hidden">
@@ -43,8 +57,8 @@ export default function Home() {
         <div className="relative z-10 max-w-5xl flex flex-col items-start w-full mt-auto">
 
           {/* Massive Headline */}
-          <h1 className="gsap-hero-element text-5xl sm:text-6xl md:text-7xl lg:text-[6.5rem] font-medium tracking-tight mb-8 text-text-main leading-[1.05]">
-            Intelligent Search for <br className="hidden md:block" /> <span className="text-text-main">Indian Healthcare</span>
+          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[6.5rem] font-medium tracking-tight mb-8 text-text-main leading-[1.05]">
+            {splitText("Intelligent Search for")} <br className="hidden md:block" /> <span className="text-text-main">{splitText("Indian Healthcare")}</span>
           </h1>
 
           {/* Subtext */}

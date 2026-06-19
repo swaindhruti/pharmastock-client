@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
 
 const NAV_ITEMS = [
   { name: 'Home', path: '/' },
@@ -19,6 +21,13 @@ export default function Navbar({ className = '' }: { className?: string }) {
 
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0, opacity: 0 });
   const [hoveredPath, setHoveredPath] = useState<string | null>(null);
+
+  useGSAP(() => {
+    gsap.fromTo(navRef.current,
+      { y: -100, opacity: 0 },
+      { y: 0, opacity: 1, duration: 1.4, ease: 'power4.out', delay: 0 }
+    );
+  }, { scope: navRef });
 
   useEffect(() => {
     // Determine which path to highlight (hovered or active)
@@ -41,11 +50,11 @@ export default function Navbar({ className = '' }: { className?: string }) {
   }, [pathname, hoveredPath]);
 
   return (
-    <nav ref={navRef} className={`w-full fixed top-0 left-0 z-[100] transition-all bg-bg-main/90 backdrop-blur-md pt-8 pb-6 ${className}`}>
+    <nav ref={navRef} className={`w-full fixed top-0 left-0 z-[100] bg-bg-main/90 backdrop-blur-md pt-8 pb-6 opacity-0 -translate-y-[100px] ${className}`}>
       <div className="w-full mx-auto px-6 md:px-16 flex items-center justify-between">
 
         {/* Left Side: Logo */}
-        <Link href="/" className="text-2xl font-black text-text-main hover:opacity-80 transition-opacity tracking-tight">
+        <Link href="/" className="text-2xl font-black text-text-main hover:opacity-80 transition-opacity tracking-tightest">
           PharmaStock
         </Link>
 
