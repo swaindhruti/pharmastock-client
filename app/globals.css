@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-bg-main: #F1F5F9; /* Light slate */
+  --color-surface: #FFFFFF;
+  --color-surface-hover: #E2E8F0; /* Slightly darker slate on hover */
+  --color-border-subtle: #CBD5E1;
+  --color-text-main: #000000; /* Pure black */
+  --color-text-muted: #666666; /* Grey */
+  --color-brand: #FF0000; /* Pure red */
+  --color-brand-hover: #CC0000;
+
+  --font-faktum: var(--font-faktum);
+}
+
+body {
+  background-color: var(--color-bg-main);
+  color: var(--color-text-main);
+  font-family: var(--font-faktum), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+html {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
