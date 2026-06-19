@@ -21,6 +21,18 @@ export default function Contact() {
   const container = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
+    // Fade up the content inside the hero
+    gsap.fromTo('.gsap-hero-element',
+      { opacity: 0, y: 30 },
+      { opacity: 1, y: 0, duration: 1.2, stagger: 0.15, ease: 'power3.out', delay: 0.2 }
+    );
+
+    // Fade in the background pattern
+    gsap.fromTo('.gsap-bg-pattern',
+      { opacity: 0 },
+      { opacity: 1, duration: 2, ease: 'power2.out', delay: 0.5 }
+    );
+
     const fadeElements = gsap.utils.toArray('.gsap-fade-up');
     fadeElements.forEach((el: unknown) => {
       gsap.fromTo(el as HTMLElement,
@@ -42,26 +54,25 @@ export default function Contact() {
 
   return (
     <div ref={container} className="min-h-screen bg-bg-main text-text-main font-faktum selection:bg-brand/20 selection:text-brand flex flex-col relative overflow-hidden">
-      
-      {/* Decorative SVG curves */}
-      <div className="absolute top-0 right-0 w-full h-[800px] pointer-events-none z-0 opacity-20">
-        <svg viewBox="0 0 1000 1000" preserveAspectRatio="none" className="w-full h-full stroke-brand fill-none" strokeWidth="1">
-           <path d="M 0,200 C 300,0 600,400 1000,100" />
-           <path d="M 0,600 C 400,800 800,200 1000,500" />
-        </svg>
+
+      {/* Unique Background Grid + Dots */}
+      <div className="gsap-bg-pattern absolute inset-0 pointer-events-none z-0">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#cbd5e1_1px,transparent_1px),linear-gradient(to_bottom,#cbd5e1_1px,transparent_1px)] bg-[size:60px_60px] opacity-50" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle,#94a3b8_2.5px,transparent_2.5px)] bg-[size:60px_60px] opacity-60" style={{ backgroundPosition: '30px 30px' }} />
+        <div className="absolute inset-0 bg-gradient-to-b from-bg-main/30 via-transparent to-bg-main" />
+        <div className="absolute inset-0 bg-gradient-to-r from-bg-main/80 via-transparent to-transparent" />
       </div>
 
       <Navbar />
 
-      <main className="w-full max-w-[1400px] mx-auto px-6 md:px-16 pt-40 pb-32 flex flex-col relative z-10 flex-grow">
-        
+      <main className="w-full mx-auto px-6 md:px-16 pt-40 pb-32 flex flex-col relative z-10 flex-grow">
+
         {/* Header Section */}
-        <div className="max-w-4xl mb-32">
-          <h1 className="gsap-fade-up text-6xl md:text-[5.5rem] font-medium tracking-tight mb-8 text-text-main leading-[1.05]">
-            Connect with <br className="hidden md:block"/>
-            <span className="text-brand">Pharmastock</span>
+        <div className="mb-32">
+          <h1 className="gsap-hero-element text-6xl md:text-[5.5rem] font-medium tracking-tight mb-8 text-text-main leading-[1.05]">
+            {"Connect with Pharmastock"}
           </h1>
-          <p className="gsap-fade-up text-xl md:text-2xl text-text-muted max-w-2xl font-medium leading-relaxed">
+          <p className="gsap-hero-element text-xl md:text-2xl text-text-muted font-medium leading-relaxed">
             Whether you want to integrate our API, report an issue, or just chat about Indian healthcare data—we&apos;d love to hear from you.
           </p>
         </div>
@@ -69,41 +80,30 @@ export default function Contact() {
         {/* Contact Links Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-32">
           {CONTACTS.map((contact, idx) => (
-            <a 
-              key={idx} 
-              href={contact.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="gsap-fade-up group block border-2 border-border-subtle bg-surface hover:border-brand p-8 transition-colors duration-300"
-            >
-              <div className="flex items-center justify-between mb-8">
-                <span className="text-brand font-black tracking-widest uppercase text-xs">
-                  {contact.platform}
-                </span>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 opacity-0 -translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 group-hover:text-brand">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-medium tracking-tight group-hover:text-brand transition-colors">
-                {contact.handle}
-              </h2>
-            </a>
+            <div key={idx} className="gsap-fade-up">
+              <a 
+                href={contact.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group block border-2 border-text-main bg-transparent hover:bg-surface-hover p-8 transition-all duration-300 rounded-3xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px]"
+              >
+                <div className="flex items-center justify-between mb-8">
+                  <span className="text-text-main font-black tracking-widest uppercase text-xs">
+                    {contact.platform}
+                  </span>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 opacity-0 -translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 text-text-main">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
+                  </svg>
+                </div>
+                <h2 className="text-2xl font-medium tracking-tight group-hover:text-text-muted transition-colors">
+                  {contact.handle}
+                </h2>
+              </a>
+            </div>
           ))}
         </div>
 
       </main>
-
-      {/* Footer */}
-      <footer className="w-full border-t border-border-subtle bg-surface px-6 md:px-12 py-8 flex flex-col md:flex-row items-center justify-between text-xs font-bold text-text-main gap-4 relative z-10">
-        <div className="flex items-center gap-2 text-lg">
-          Pharmastock
-        </div>
-        <div className="flex gap-4 text-text-muted font-medium">
-          <a href="#" className="hover:text-text-main transition-colors">Status</a>
-          <a href="#" className="hover:text-text-main transition-colors">Terms of Use</a>
-          <a href="#" className="hover:text-text-main transition-colors">Privacy Policy</a>
-        </div>
-      </footer>
     </div>
   );
 }

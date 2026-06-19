@@ -1,8 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDebounce } from '@/hooks/useDebounce';
 import Link from 'next/link';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
+
+gsap.registerPlugin(useGSAP);
 
 interface Medicine {
   _id: string;
@@ -18,8 +22,16 @@ export default function MedicineSearch() {
   const [results, setResults] = useState<Medicine[]>([]);
   const [isFallback, setIsFallback] = useState(false);
   const [loading, setLoading] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const debouncedSearch = useDebounce(searchTerm, 350); // 350ms window
+  const debouncedSearch = useDebounce(searchTerm, 350);
+
+  useGSAP(() => {
+    gsap.fromTo('.gsap-search-left',
+      { opacity: 0, x: -30 },
+      { opacity: 1, x: 0, duration: 1.2, stagger: 0.15, ease: 'power3.out', delay: 0.2 }
+    );
+  }, { scope: containerRef });
 
   useEffect(() => {
     async function fetchResults() {
@@ -46,134 +58,134 @@ export default function MedicineSearch() {
   }, [debouncedSearch]);
 
   return (
-    <div className="w-full max-w-3xl mx-auto p-4 font-faktum relative">
+    <div ref={containerRef} className="w-full h-full flex flex-col lg:flex-row gap-8 lg:gap-24 font-faktum relative z-10 lg:pt-16">
 
-      <div className="relative z-10 flex gap-2">
-        <div className="relative flex-1 group">
-          {/* Thick colored border wrapper */}
-          <div className="absolute -inset-0.5 bg-brand rounded-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-300"></div>
+      {/* Left Column: Header and Search Bar */}
+      <div className="w-full lg:w-1/2 flex flex-col justify-center h-full max-w-2xl shrink-0 pb-12 lg:pb-32">
+        <div className="mb-16">
+          <h1 className="gsap-search-left text-6xl md:text-[5.5rem] font-medium tracking-tight mb-8 text-text-main leading-[1.05]">
+            Indian Medical Database
+          </h1>
+          <p className="gsap-search-left text-xl md:text-2xl text-text-muted font-medium leading-relaxed max-w-xl">
+            Instantly lookup medicines, map generic substitutes, and view side-effects using our zero-latency search index.
+          </p>
+        </div>
 
-          <div className="relative flex bg-surface border-2 border-brand rounded-xl overflow-hidden shadow-sm transition-shadow duration-300 group-focus-within:shadow-brand/20 group-focus-within:shadow-lg">
+        {/* Redesigned Search Bar */}
+        <div className="gsap-search-left relative z-10 w-full group">
+          <div className="relative flex items-center bg-transparent border-b-4 border-text-main focus-within:border-text-muted transition-colors">
             <input
               type="text"
-              placeholder="Search for medicines, substitutes, side effects, uses..."
-              className="w-full px-6 py-5 bg-transparent text-text-main focus:outline-none placeholder:text-text-muted/60 text-lg font-medium"
+              placeholder="Search by name or uses..."
+              className="w-full py-6 bg-transparent text-text-main focus:outline-none placeholder:text-text-muted/40 text-3xl md:text-4xl font-black tracking-tight"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              autoFocus
             />
-            {/* Loading Spinner or Clear Button */}
-            <div className="absolute right-24 top-1/2 -translate-y-1/2">
-              {loading && <div className="w-5 h-5 border-2 border-brand/20 border-t-brand rounded-full animate-spin" />}
+            {/* Loading Spinner */}
+            <div className="absolute right-12">
+              {loading && <div className="w-8 h-8 border-4 border-text-muted/20 border-t-text-main rounded-full animate-spin" />}
             </div>
-
-            {/* Search Button */}
-            <button className="bg-brand text-white px-8 flex items-center justify-center hover:bg-brand-hover active:bg-brand-hover/90 transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-6 h-6 hover:scale-110 active:scale-95 transition-transform duration-200">
-                <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            {/* Decorative Icon */}
+            <div className="absolute right-0 text-text-main">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={4} stroke="currentColor" className="w-8 h-8 md:w-10 md:h-10 opacity-40">
+                <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
               </svg>
-            </button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Categories Bar */}
-      <div className="flex flex-wrap items-center justify-center gap-3 mt-8 relative z-10">
-        <span className="text-xs font-bold text-text-muted mr-2 opacity-80">India&apos;s largest dataset of 2.5L+ records covering</span>
-      </div>
-      <div className="flex flex-wrap items-center justify-center gap-3 mt-4 relative z-10">
-        <button className="px-5 py-2.5 rounded-lg bg-surface text-text-main border-2 border-border-subtle font-bold hover:bg-surface-hover hover:border-brand/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center gap-2">
-          Medicines
-        </button>
-        <button className="px-5 py-2.5 rounded-lg bg-surface text-text-main border-2 border-border-subtle font-bold hover:bg-surface-hover hover:border-brand/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center gap-2">
-          Substitutes
-        </button>
-        <button className="px-5 py-2.5 rounded-lg bg-surface text-text-main border-2 border-border-subtle font-bold hover:bg-surface-hover hover:border-brand/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center gap-2">
-          Side Effects
-        </button>
-        <button className="px-5 py-2.5 rounded-lg bg-surface text-text-main border-2 border-border-subtle font-bold hover:bg-surface-hover hover:border-brand/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center gap-2">
-          Uses
-        </button>
-        <button className="px-5 py-2.5 rounded-lg bg-surface text-text-main border-2 border-border-subtle font-bold hover:bg-surface-hover hover:border-brand/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center gap-2">
-          Retail & Stockists
-        </button>
-      </div>
+      {/* Right Column: Scrollable Results */}
+      <div className="w-full lg:w-1/2 h-full flex-grow overflow-y-auto pb-32 lg:pt-12 pr-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] relative">
 
-      {/* Skeleton Loading State */}
-      {loading && results.length === 0 && searchTerm.length >= 3 && (
-        <ul className="mt-8 space-y-3 relative z-20">
-          {[...Array(4)].map((_, i) => (
-            <li key={i} className="p-5 rounded-xl border-2 border-border-subtle bg-surface animate-pulse flex flex-col gap-3 shadow-sm opacity-80">
-              <div className="flex items-center gap-3">
-                <div className="h-4 bg-border-subtle rounded w-1/3"></div>
-                <div className="h-3 bg-border-subtle rounded w-1/4"></div>
-              </div>
-              <div className="h-2.5 bg-border-subtle rounded w-full mt-2"></div>
-              <div className="h-2.5 bg-border-subtle rounded w-5/6"></div>
-            </li>
-          ))}
-        </ul>
-      )}
+        {/* Initial Empty State */}
+        {!loading && searchTerm.length < 3 && results.length === 0 && (
+          <div className="h-full flex flex-col items-center justify-center opacity-30 mt-20 lg:mt-0">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-32 h-32 mb-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.042 21.672 13.684 16.6m0 0-2.51 2.225.569-9.47 5.227 7.917-3.286-.672Zm-7.518-.267A8.25 8.25 0 1 1 20.25 10.5M8.288 14.212A5.25 5.25 0 1 1 17.25 10.5" />
+            </svg>
+            <p className="text-2xl font-bold tracking-widest uppercase">Awaiting Input</p>
+          </div>
+        )}
 
-      {isFallback && results.length > 0 && !loading && (
-        <div className="mt-8 p-4 rounded-xl bg-amber-50 border-2 border-amber-200 text-amber-700 font-bold flex items-center gap-3 shadow-md relative z-20">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          No exact medicine found. Showing relevant alternatives.
-        </div>
-      )}
+        {/* Skeleton Loading State */}
+        {loading && results.length === 0 && searchTerm.length >= 3 && (
+          <ul className="space-y-6">
+            {[...Array(5)].map((_, i) => (
+              <li key={i} className="p-8 rounded-3xl border-2 border-text-main bg-transparent animate-pulse flex flex-col gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="h-6 bg-border-subtle rounded-md w-1/3"></div>
+                  <div className="h-5 bg-border-subtle rounded-md w-1/4"></div>
+                </div>
+                <div className="h-4 bg-border-subtle rounded-md w-full mt-2"></div>
+                <div className="h-4 bg-border-subtle rounded-md w-5/6"></div>
+              </li>
+            ))}
+          </ul>
+        )}
 
-      {searchTerm.length >= 3 && !loading && results.length === 0 && (
-        <div className="mt-8 p-8 rounded-xl bg-surface border-2 border-border-subtle text-center flex flex-col items-center justify-center shadow-md relative z-20">
-          <p className="text-text-main font-black text-xl mb-2">No results for &ldquo;{searchTerm}&rdquo;</p>
-          <p className="text-base font-medium text-text-muted">Try checking the spelling or searching by therapeutic class.</p>
-        </div>
-      )}
+        {/* Fallback Notice */}
+        {isFallback && results.length > 0 && !loading && (
+          <div className="mb-6 p-6 rounded-3xl bg-surface border-2 border-text-main font-bold flex items-center gap-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            No exact medicine found. Showing relevant alternatives.
+          </div>
+        )}
 
-      {/* Results List */}
-      {!loading && results.length > 0 && (
-        <div className="relative z-20">
-          <ul className="mt-8 space-y-4">
+        {/* No Results Notice */}
+        {searchTerm.length >= 3 && !loading && results.length === 0 && (
+          <div className="p-12 rounded-3xl bg-transparent border-2 border-text-main text-center flex flex-col items-center justify-center shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+            <p className="text-text-main font-black text-3xl mb-4">No results for &ldquo;{searchTerm}&rdquo;</p>
+            <p className="text-xl font-medium text-text-muted">Try checking the spelling or searching by therapeutic class.</p>
+          </div>
+        )}
+
+        {/* Results List */}
+        {!loading && results.length > 0 && (
+          <ul className="space-y-6 pb-20">
             {results.map((med) => (
-              <li
-                key={med._id}
-                className="rounded-xl border-2 border-border-subtle bg-surface hover:border-brand hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group"
-              >
-                <Link href={`/medicine/${med._id}`} className="block p-5 w-full h-full">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
-                    <h3 className="text-xl font-black text-text-main capitalize group-hover:text-brand transition-colors duration-200">
+              <li key={med._id}>
+                <Link
+                  href={`/medicine/${med._id}`}
+                  className="block p-8 rounded-3xl border-2 border-text-main bg-transparent hover:bg-surface-hover shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[4px] hover:translate-y-[4px] transition-all group"
+                >
+                  <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 mb-6">
+                    <h3 className="text-3xl font-black text-text-main capitalize group-hover:text-text-muted transition-colors duration-200 tracking-tight">
                       {med.name}
                     </h3>
                     {med.therapeuticClass && (
-                      <span className="text-xs px-3 py-1.5 rounded-lg bg-bg-main text-text-muted border-2 border-border-subtle self-start sm:self-auto font-bold group-hover:border-brand/20 transition-colors">
+                      <span className="text-xs px-4 py-2 rounded-full bg-surface border-2 border-text-main self-start xl:self-auto font-black text-text-main uppercase tracking-widest shrink-0">
                         {med.therapeuticClass}
                       </span>
                     )}
                   </div>
 
-                {med.substitutes && med.substitutes.length > 0 && (
-                  <div className="mt-4 pt-4 border-t-2 border-border-subtle/50 group-hover:border-brand/10 transition-colors">
-                    <p className="text-xs font-bold text-text-muted mb-2 uppercase tracking-wide">Substitutes</p>
-                    <div className="flex flex-wrap gap-2">
-                      {med.substitutes.slice(0, 4).map((sub, idx) => (
-                        <span key={idx} className="text-xs px-3 py-1.5 rounded-lg bg-surface-hover text-text-main border border-border-subtle font-semibold group-hover:bg-brand/5 group-hover:border-brand/20 transition-colors">
-                          {sub}
-                        </span>
-                      ))}
-                      {med.substitutes.length > 4 && (
-                        <span className="text-xs px-3 py-1.5 rounded-lg bg-surface-hover text-text-muted border border-border-subtle font-semibold">
-                          +{med.substitutes.length - 4} more
-                        </span>
-                      )}
+                  {med.substitutes && med.substitutes.length > 0 && (
+                    <div className="mt-6 pt-6 border-t-2 border-border-subtle">
+                      <p className="text-xs font-bold text-text-muted mb-4 uppercase tracking-widest">Generic Substitutes</p>
+                      <div className="flex flex-wrap gap-3">
+                        {med.substitutes.slice(0, 4).map((sub, idx) => (
+                          <span key={idx} className="text-sm px-4 py-2 rounded-full bg-surface border-2 border-border-subtle font-bold text-text-main">
+                            {sub}
+                          </span>
+                        ))}
+                        {med.substitutes.length > 4 && (
+                          <span className="text-sm px-4 py-2 rounded-full bg-transparent border-2 border-transparent font-bold text-text-muted">
+                            +{med.substitutes.length - 4} more
+                          </span>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
                 </Link>
               </li>
             ))}
           </ul>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

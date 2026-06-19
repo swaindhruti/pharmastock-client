@@ -35,6 +35,25 @@ export default function Services() {
   const container = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
+    // Animate letters
+    gsap.fromTo('.gsap-letter',
+      { opacity: 0, y: 40 },
+      { opacity: 1, y: 0, duration: 0.8, stagger: 0.02, ease: 'power3.out', delay: 0.2 }
+    );
+
+    // Fade up the content inside the hero
+    gsap.fromTo('.gsap-hero-element',
+      { opacity: 0, y: 30 },
+      { opacity: 1, y: 0, duration: 1.2, stagger: 0.15, ease: 'power3.out', delay: 0.8 }
+    );
+
+    // Fade in the background pattern
+    gsap.fromTo('.gsap-bg-pattern',
+      { opacity: 0 },
+      { opacity: 1, duration: 2, ease: 'power2.out', delay: 0.5 }
+    );
+
+    // Fade up scroll-triggered elements
     const fadeElements = gsap.utils.toArray('.gsap-fade-up');
     fadeElements.forEach((el: unknown) => {
       gsap.fromTo(el as HTMLElement,
@@ -54,28 +73,35 @@ export default function Services() {
     });
   }, { scope: container });
 
+  const splitText = (text: string) => {
+    return text.split("").map((char, index) => (
+      <span key={index} className="inline-block gsap-letter">
+        {char === " " ? "\u00A0" : char}
+      </span>
+    ));
+  };
+
   return (
     <div ref={container} className="min-h-screen bg-bg-main text-text-main font-faktum selection:bg-brand/20 selection:text-brand flex flex-col relative overflow-hidden">
-      
-      {/* Decorative SVG curves */}
-      <div className="absolute top-0 right-0 w-full h-[800px] pointer-events-none z-0 opacity-20">
-        <svg viewBox="0 0 1000 1000" preserveAspectRatio="none" className="w-full h-full stroke-brand fill-none" strokeWidth="1">
-           <path d="M 0,200 C 300,0 600,400 1000,100" />
-           <path d="M 0,600 C 400,800 800,200 1000,500" />
-        </svg>
+
+      {/* Unique Background Grid + Dots */}
+      <div className="gsap-bg-pattern absolute inset-0 pointer-events-none z-0">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#cbd5e1_1px,transparent_1px),linear-gradient(to_bottom,#cbd5e1_1px,transparent_1px)] bg-[size:60px_60px] opacity-50" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle,#94a3b8_2.5px,transparent_2.5px)] bg-[size:60px_60px] opacity-60" style={{ backgroundPosition: '30px 30px' }} />
+        <div className="absolute inset-0 bg-gradient-to-b from-bg-main/30 via-transparent to-bg-main" />
+        <div className="absolute inset-0 bg-gradient-to-r from-bg-main/80 via-transparent to-transparent" />
       </div>
 
       <Navbar />
 
-      <main className="w-full max-w-[1400px] mx-auto px-6 md:px-16 pt-40 pb-32 flex flex-col relative z-10 flex-grow">
-        
+      <main className="w-full mx-auto px-6 md:px-16 pt-40 pb-32 flex flex-col relative z-10 flex-grow">
+
         {/* Header Section */}
-        <div className="max-w-4xl mb-32">
-          <h1 className="gsap-fade-up text-6xl md:text-[5.5rem] font-medium tracking-tight mb-8 text-text-main leading-[1.05]">
-            Enterprise Infrastructure for <br className="hidden md:block"/>
-            <span className="text-brand">Healthcare Systems</span>
+        <div className=" mb-32">
+          <h1 className="text-6xl md:text-[5.5rem] font-medium tracking-tight mb-8 text-text-main leading-[1.05]">
+            {"Enterprise Infrastructure for Healthcare Systems"}
           </h1>
-          <p className="gsap-fade-up text-xl md:text-2xl text-text-muted max-w-2xl font-medium leading-relaxed">
+          <p className="gsap-hero-element text-xl md:text-2xl text-text-muted max-w-2xl font-medium leading-relaxed">
             We provide the foundational rails for medical applications. From blazing fast search to comprehensive supply chain analytics.
           </p>
         </div>
@@ -85,12 +111,12 @@ export default function Services() {
           {SERVICES.map((service, idx) => (
             <div key={idx} className="gsap-fade-up group cursor-pointer border-t-2 border-text-main pt-8">
               <div className="flex justify-between items-end mb-8">
-                <span className="text-brand font-black text-2xl tracking-widest">{service.id}</span>
+                <span className="text-text-main font-black text-2xl tracking-widest">{service.id}</span>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-8 h-8 opacity-0 -translate-x-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                 </svg>
               </div>
-              <h2 className="text-4xl md:text-5xl font-medium tracking-tight mb-6 group-hover:text-brand transition-colors">
+              <h2 className="text-4xl md:text-5xl font-medium tracking-tight mb-6 group-hover:text-text-muted transition-colors">
                 {service.title}
               </h2>
               <p className="text-text-muted text-lg font-medium leading-relaxed max-w-md">
@@ -99,32 +125,7 @@ export default function Services() {
             </div>
           ))}
         </div>
-
-        {/* Call to Action */}
-        <div className="gsap-fade-up bg-surface border border-border-subtle p-12 md:p-20 flex flex-col md:flex-row items-center justify-between gap-12 relative overflow-hidden">
-          <div className="absolute inset-0 bg-brand/5"></div>
-          <div className="relative z-10 max-w-2xl">
-            <h3 className="text-4xl font-medium mb-4">Ready to integrate?</h3>
-            <p className="text-text-muted text-lg font-medium">Access our developer documentation and test our models in your application today.</p>
-          </div>
-          <button className="relative z-10 bg-text-main text-white px-8 py-4 font-black tracking-widest uppercase hover:bg-brand transition-colors whitespace-nowrap">
-            READ THE DOCS
-          </button>
-        </div>
-
       </main>
-
-      {/* Footer */}
-      <footer className="w-full border-t border-border-subtle bg-surface px-6 md:px-12 py-8 flex flex-col md:flex-row items-center justify-between text-xs font-bold text-text-main gap-4 relative z-10">
-        <div className="flex items-center gap-2 text-lg">
-          Pharmastock
-        </div>
-        <div className="flex gap-4 text-text-muted font-medium">
-          <a href="#" className="hover:text-text-main transition-colors">Status</a>
-          <a href="#" className="hover:text-text-main transition-colors">Terms of Use</a>
-          <a href="#" className="hover:text-text-main transition-colors">Privacy Policy</a>
-        </div>
-      </footer>
     </div>
   );
 }

@@ -8,6 +8,7 @@ import gsap from 'gsap';
 
 const NAV_ITEMS = [
   { name: 'Home', path: '/' },
+  { name: 'Data Explorer', path: '/search' },
   { name: 'About Us', path: '/about' },
   { name: 'Services', path: '/services' },
   { name: 'Blogs', path: '/blogs' },
@@ -21,6 +22,16 @@ export default function Navbar({ className = '' }: { className?: string }) {
 
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0, opacity: 0 });
   const [hoveredPath, setHoveredPath] = useState<string | null>(null);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useGSAP(() => {
     gsap.fromTo(navRef.current,
@@ -50,8 +61,11 @@ export default function Navbar({ className = '' }: { className?: string }) {
   }, [pathname, hoveredPath]);
 
   return (
-    <nav ref={navRef} className={`w-full fixed top-0 left-0 z-[100] bg-bg-main/90 backdrop-blur-md pt-8 pb-6 opacity-0 -translate-y-[100px] ${className}`}>
-      <div className="w-full mx-auto px-6 md:px-16 flex items-center justify-between">
+    <nav ref={navRef} className={`w-full fixed top-0 left-0 z-[100] opacity-0 -translate-y-[100px] ${className}`}>
+      {/* Blurred Background that fades in on scroll */}
+      <div className={`absolute inset-0 transition-all duration-300 pointer-events-none ${scrolled ? 'bg-bg-main/80 backdrop-blur-xl border-b border-border-subtle shadow-sm' : 'bg-transparent border-b border-transparent'}`} />
+
+      <div className={`w-full mx-auto px-6 md:px-16 flex items-center justify-between relative z-10 transition-all duration-300 ${scrolled ? 'py-6' : 'pt-8 pb-6'}`}>
 
         {/* Left Side: Logo */}
         <Link href="/" className="text-2xl font-black text-text-main hover:opacity-80 transition-opacity tracking-tightest">
@@ -59,7 +73,7 @@ export default function Navbar({ className = '' }: { className?: string }) {
         </Link>
 
         {/* Middle: Capsule Links */}
-        <div className="hidden lg:flex items-center justify-center absolute left-1/2 -translate-x-1/2">
+        <div className="hidden xl:flex items-center justify-center absolute left-1/2 -translate-x-1/2">
           <ul ref={listRef} className="flex items-center gap-2 bg-[#f5f5f5] px-2 py-2 relative border border-[#e5e5e5] rounded-full" onMouseLeave={() => setHoveredPath(null)}>
             {NAV_ITEMS.map((item) => {
               const isActive = pathname === item.path;

@@ -39,6 +39,18 @@ export default function Blogs() {
   const container = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
+    // Fade up the content inside the hero
+    gsap.fromTo('.gsap-hero-element',
+      { opacity: 0, y: 30 },
+      { opacity: 1, y: 0, duration: 1.2, stagger: 0.15, ease: 'power3.out', delay: 0.2 }
+    );
+
+    // Fade in the background pattern
+    gsap.fromTo('.gsap-bg-pattern',
+      { opacity: 0 },
+      { opacity: 1, duration: 2, ease: 'power2.out', delay: 0.5 }
+    );
+
     const fadeElements = gsap.utils.toArray('.gsap-fade-up');
     fadeElements.forEach((el: unknown) => {
       gsap.fromTo(el as HTMLElement,
@@ -60,79 +72,76 @@ export default function Blogs() {
 
   return (
     <div ref={container} className="min-h-screen bg-bg-main text-text-main font-faktum selection:bg-brand/20 selection:text-brand flex flex-col relative overflow-hidden">
-      
-      {/* Decorative SVG curves */}
-      <div className="absolute top-0 right-0 w-full h-[800px] pointer-events-none z-0 opacity-20">
-        <svg viewBox="0 0 1000 1000" preserveAspectRatio="none" className="w-full h-full stroke-brand fill-none" strokeWidth="1">
-           <path d="M 0,200 C 300,0 600,400 1000,100" />
-           <path d="M 0,600 C 400,800 800,200 1000,500" />
-        </svg>
+
+      {/* Unique Background Grid + Dots */}
+      <div className="gsap-bg-pattern absolute inset-0 pointer-events-none z-0">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#cbd5e1_1px,transparent_1px),linear-gradient(to_bottom,#cbd5e1_1px,transparent_1px)] bg-[size:60px_60px] opacity-50" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle,#94a3b8_2.5px,transparent_2.5px)] bg-[size:60px_60px] opacity-60" style={{ backgroundPosition: '30px 30px' }} />
+        <div className="absolute inset-0 bg-gradient-to-b from-bg-main/30 via-transparent to-bg-main" />
+        <div className="absolute inset-0 bg-gradient-to-r from-bg-main/80 via-transparent to-transparent" />
       </div>
 
       <Navbar />
 
-      <main className="w-full max-w-[1400px] mx-auto px-6 md:px-16 pt-40 pb-32 flex flex-col relative z-10 flex-grow">
-        
+      <main className="w-full mx-auto px-6 md:px-16 pt-40 pb-32 flex flex-col relative z-10 flex-grow">
+
         {/* Header Section */}
         <div className="max-w-4xl mb-24">
-          <h1 className="gsap-fade-up text-6xl md:text-[5.5rem] font-medium tracking-tight mb-8 text-text-main leading-[1.05]">
-            Insights & <br className="hidden md:block"/>
-            <span className="text-brand">Updates</span>
+          <h1 className="gsap-hero-element text-6xl md:text-[5.5rem] font-medium tracking-tight mb-8 text-text-main leading-[1.05]">
+            {"Insights & Updates"}
           </h1>
-          <p className="gsap-fade-up text-xl md:text-2xl text-text-muted max-w-2xl font-medium leading-relaxed">
+          <p className="gsap-hero-element text-xl md:text-2xl text-text-muted max-w-2xl font-medium leading-relaxed">
             Thoughts on data engineering, the healthcare ecosystem, and building the definitive medical dictionary.
           </p>
         </div>
 
         {/* Featured Post (First one) */}
-        <div className="gsap-fade-up mb-24 group cursor-pointer border-l-4 border-brand pl-8 py-2">
-           <div className="flex items-center gap-4 mb-4">
-              <span className="text-brand font-black tracking-widest uppercase text-xs">{BLOGS[0].tag}</span>
-              <span className="text-text-muted text-sm font-medium">{BLOGS[0].date}</span>
-           </div>
-           <h2 className="text-4xl md:text-5xl font-medium tracking-tight mb-4 group-hover:text-brand transition-colors max-w-4xl">
+        <div className="gsap-hero-element mb-24">
+          <a href="#" className="group flex flex-col border-2 border-text-main bg-white hover:bg-surface-hover p-8 md:p-12 transition-all duration-300 rounded-3xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[8px] hover:translate-y-[8px]">
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-4">
+                <span className="text-text-main font-black tracking-widest uppercase text-xs">{BLOGS[0].tag}</span>
+                <span className="text-text-muted text-sm font-medium">{BLOGS[0].date}</span>
+              </div>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-8 h-8 opacity-0 -translate-x-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+              </svg>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-medium tracking-tight mb-6 transition-colors max-w-4xl">
               {BLOGS[0].title}
-           </h2>
-           <p className="text-text-muted text-lg md:text-xl font-medium leading-relaxed max-w-3xl">
+            </h2>
+            <p className="text-text-muted text-lg md:text-xl font-medium leading-relaxed max-w-3xl">
               {BLOGS[0].excerpt}
-           </p>
+            </p>
+          </a>
         </div>
 
         {/* Grid of remaining posts */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-32 border-t border-border-subtle pt-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-32 border-t border-border-subtle pt-16">
           {BLOGS.slice(1).map((blog, idx) => (
-            <div key={idx} className="gsap-fade-up group cursor-pointer flex flex-col">
-              <div className="w-full h-[240px] bg-border-subtle relative overflow-hidden mb-6">
-                  {/* Generic placeholder background for other blogs */}
-                  <div className="absolute inset-0 bg-surface/50 group-hover:scale-105 transition-transform duration-700 ease-out"></div>
-              </div>
-              <div className="flex items-center gap-4 mb-4">
-                <span className="text-brand font-black tracking-widest uppercase text-xs">{blog.tag}</span>
-                <span className="text-text-muted text-sm font-medium">{blog.date}</span>
-              </div>
-              <h3 className="text-2xl font-medium tracking-tight mb-3 group-hover:text-brand transition-colors">
-                {blog.title}
-              </h3>
-              <p className="text-text-muted text-base font-medium leading-relaxed flex-grow">
-                {blog.excerpt}
-              </p>
+            <div key={idx} className="gsap-fade-up">
+              <a href="#" className="group flex flex-col border-2 border-text-main bg-white hover:bg-surface-hover p-8 transition-all duration-300 rounded-3xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px]">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-text-main font-black tracking-widest uppercase text-xs">{blog.tag}</span>
+                    <span className="text-text-muted text-sm font-medium">{blog.date}</span>
+                  </div>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 opacity-0 -translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-medium tracking-tight mb-4 transition-colors">
+                  {blog.title}
+                </h3>
+                <p className="text-text-muted text-base font-medium leading-relaxed flex-grow">
+                  {blog.excerpt}
+                </p>
+              </a>
             </div>
           ))}
         </div>
 
       </main>
-
-      {/* Footer */}
-      <footer className="w-full border-t border-border-subtle bg-surface px-6 md:px-12 py-8 flex flex-col md:flex-row items-center justify-between text-xs font-bold text-text-main gap-4 relative z-10">
-        <div className="flex items-center gap-2 text-lg">
-          Pharmastock
-        </div>
-        <div className="flex gap-4 text-text-muted font-medium">
-          <a href="#" className="hover:text-text-main transition-colors">Status</a>
-          <a href="#" className="hover:text-text-main transition-colors">Terms of Use</a>
-          <a href="#" className="hover:text-text-main transition-colors">Privacy Policy</a>
-        </div>
-      </footer>
     </div>
   );
 }
