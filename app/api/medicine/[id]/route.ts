@@ -8,7 +8,8 @@ export async function GET(
 ) {
   try {
     const resolvedParams = await params;
-    const { id } = resolvedParams;
+    const { id: idParam } = resolvedParams;
+    const id = idParam.split('-')[0];
 
     if (!id || !ObjectId.isValid(id)) {
       return NextResponse.json({ error: 'Invalid medicine ID' }, { status: 400 });

@@ -8,8 +8,8 @@ const faktum = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Pharmastock - Health Dictionary",
-  description: "Your trusted dictionary for health, medicine, diseases and more.",
+  title: "SmartDrugFinder - Health Dictionary",
+  description: "Explore the most accurate database of Indian medical data.",
 };
 
 export default function RootLayout({

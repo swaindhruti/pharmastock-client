@@ -17,7 +17,8 @@ interface Medicine {
   habitForming?: string;
 }
 
-async function getMedicine(id: string): Promise<Medicine | null> {
+async function getMedicine(idParam: string): Promise<Medicine | null> {
+  const id = idParam.split('-')[0];
   if (!ObjectId.isValid(id)) return null;
 
   const client = await clientPromise;
@@ -42,15 +43,15 @@ export default async function MedicinePage({ params }: { params: Promise<{ id: s
 
       {/* Unique Background Grid + Dots */}
       <div className="gsap-bg-pattern absolute inset-0 pointer-events-none z-0">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#cbd5e1_1px,transparent_1px),linear-gradient(to_bottom,#cbd5e1_1px,transparent_1px)] bg-[size:60px_60px] opacity-50" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle,#94a3b8_2.5px,transparent_2.5px)] bg-[size:60px_60px] opacity-60" style={{ backgroundPosition: '30px 30px' }} />
-        <div className="absolute inset-0 bg-gradient-to-b from-bg-main/30 via-transparent to-bg-main" />
-        <div className="absolute inset-0 bg-gradient-to-r from-bg-main/80 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#cbd5e1_1px,transparent_1px),linear-gradient(to_bottom,#cbd5e1_1px,transparent_1px)] bg-size-[60px_60px] opacity-50" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle,#94a3b8_2.5px,transparent_2.5px)] bg-size-[60px_60px] opacity-60" style={{ backgroundPosition: '30px 30px' }} />
+        <div className="absolute inset-0 bg-linear-to-b from-bg-main/30 via-transparent to-bg-main" />
+        <div className="absolute inset-0 bg-linear-to-r from-bg-main/80 via-transparent to-transparent" />
       </div>
 
       <Navbar />
 
-      <main className="w-full mx-auto px-6 md:px-16 pt-40 pb-32 flex flex-col relative z-10 flex-grow">
+      <main className="w-full mx-auto px-6 md:px-16 pt-40 pb-32 flex flex-col relative z-10 grow">
 
         {/* Breadcrumb */}
         <div className="gsap-hero-element mb-12">

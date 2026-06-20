@@ -10,8 +10,6 @@ const NAV_ITEMS = [
   { name: 'Home', path: '/' },
   { name: 'Data Explorer', path: '/search' },
   { name: 'About Us', path: '/about' },
-  { name: 'Services', path: '/services' },
-  { name: 'Blogs', path: '/blogs' },
   { name: 'Contact', path: '/contact' },
 ];
 
@@ -61,7 +59,7 @@ export default function Navbar({ className = '' }: { className?: string }) {
   }, [pathname, hoveredPath]);
 
   return (
-    <nav ref={navRef} className={`w-full fixed top-0 left-0 z-[100] opacity-0 -translate-y-[100px] ${className}`}>
+    <nav ref={navRef} className={`w-full fixed top-0 left-0 z-100 opacity-0 translate-y-[-100px] ${className}`}>
       {/* Blurred Background that fades in on scroll */}
       <div className={`absolute inset-0 transition-all duration-300 pointer-events-none ${scrolled ? 'bg-bg-main/80 backdrop-blur-xl border-b border-border-subtle shadow-sm' : 'bg-transparent border-b border-transparent'}`} />
 
@@ -69,12 +67,12 @@ export default function Navbar({ className = '' }: { className?: string }) {
 
         {/* Left Side: Logo */}
         <Link href="/" className="text-2xl font-black text-text-main hover:opacity-80 transition-opacity tracking-tightest">
-          PharmaStock
+          SmartDrugFinder
         </Link>
 
         {/* Middle: Capsule Links */}
         <div className="hidden xl:flex items-center justify-center absolute left-1/2 -translate-x-1/2">
-          <ul ref={listRef} className="flex items-center gap-2 bg-[#f5f5f5] px-2 py-2 relative border border-[#e5e5e5] rounded-full" onMouseLeave={() => setHoveredPath(null)}>
+          <ul ref={listRef} className="flex items-center gap-2 bg-slate-50 px-2 py-2 relative border border-[#e5e5e5] rounded-full" onMouseLeave={() => setHoveredPath(null)}>
             {NAV_ITEMS.map((item) => {
               const isActive = pathname === item.path;
               return (
@@ -101,8 +99,8 @@ export default function Navbar({ className = '' }: { className?: string }) {
 
         {/* Right Side: Login */}
         <div className="flex items-center">
-          <Link href="/app" className="group flex items-center justify-center gap-2 bg-text-main text-white px-6 py-2.5 rounded-full text-sm font-bold tracking-wide transition-all shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px]">
-            Sign Up / In
+          <Link href="/app" className="group flex items-center justify-center gap-2 bg-slate-50 border-2 border-black text-black px-6 py-2.5 rounded-full text-sm font-bold tracking-wide transition-all shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px]">
+            SmartDrugFinder
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4 transition-transform duration-300 group-hover:rotate-45">
               <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
             </svg>

@@ -97,7 +97,7 @@ export default function MedicineSearch() {
       </div>
 
       {/* Right Column: Scrollable Results */}
-      <div className="w-full lg:w-1/2 h-full flex-grow overflow-y-auto pb-32 lg:pt-12 pr-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] relative">
+      <div className="w-full lg:w-1/2 h-full grow overflow-y-auto pb-32 lg:pt-12 pr-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none relative">
 
         {/* Initial Empty State */}
         {!loading && searchTerm.length < 3 && results.length === 0 && (
@@ -149,7 +149,7 @@ export default function MedicineSearch() {
             {results.map((med) => (
               <li key={med._id}>
                 <Link
-                  href={`/medicine/${med._id}`}
+                  href={`/medicine/${med._id}-${med.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
                   className="block p-8 rounded-3xl border-2 border-text-main bg-transparent hover:bg-surface-hover shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[4px] hover:translate-y-[4px] transition-all group"
                 >
                   <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 mb-6">
