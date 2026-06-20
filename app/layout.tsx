@@ -8,8 +8,31 @@ const faktum = localFont({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://smartdrugfinder.vercel.app"), // Replace with your actual production domain
   title: "SmartDrugFinder - Health Dictionary",
   description: "Explore the most accurate database of Indian medical data.",
+  openGraph: {
+    title: "SmartDrugFinder - Health Dictionary",
+    description: "Explore the most accurate database of Indian medical data.",
+    url: "/",
+    siteName: "SmartDrugFinder",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 600,
+        alt: "SmartDrugFinder Preview Image",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SmartDrugFinder - Health Dictionary",
+    description: "Explore the most accurate database of Indian medical data.",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({

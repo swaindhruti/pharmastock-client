@@ -2,7 +2,9 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useDebounce } from '@/hooks/useDebounce';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 
@@ -22,7 +24,49 @@ export default function MedicineSearch() {
   const [results, setResults] = useState<Medicine[]>([]);
   const [isFallback, setIsFallback] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  
+  const router = useRouter();
+  const [showProfileDialog, setShowProfileDialog] = useState(false);
+  const [pendingHref, setPendingHref] = useState('');
+  const [formData, setFormData] = useState({ profession: 'Doctor', gender: 'Male', purpose: 'Research' });
+  const [submittingProfile, setSubmittingProfile] = useState(false);
+
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (typeof document !== 'undefined' && document.cookie.includes('profile_completed=true')) {
+      return; 
+    }
+    e.preventDefault();
+    setPendingHref(href);
+    setShowProfileDialog(true);
+  };
+
+  const handleProfileSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmittingProfile(true);
+    try {
+      await fetch('/api/analytics', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      document.cookie = "profile_completed=true; path=/; max-age=31536000";
+      setShowProfileDialog(false);
+      router.push(pendingHref);
+    } catch (err) {
+      console.error(err);
+      document.cookie = "profile_completed=true; path=/; max-age=31536000";
+      setShowProfileDialog(false);
+      router.push(pendingHref);
+    } finally {
+      setSubmittingProfile(false);
+    }
+  };
 
   const debouncedSearch = useDebounce(searchTerm, 350);
 
@@ -61,12 +105,12 @@ export default function MedicineSearch() {
     <div ref={containerRef} className="w-full h-full flex flex-col lg:flex-row gap-8 lg:gap-24 font-faktum relative z-10 lg:pt-16">
 
       {/* Left Column: Header and Search Bar */}
-      <div className="w-full lg:w-1/2 flex flex-col justify-center h-full max-w-2xl shrink-0 pb-12 lg:pb-32">
-        <div className="mb-16">
-          <h1 className="gsap-search-left text-6xl md:text-[5.5rem] font-medium tracking-tight mb-8 text-text-main leading-[1.05]">
+      <div className="w-full lg:w-1/2 flex flex-col justify-center h-full max-w-2xl shrink-0 pb-8 lg:pb-32">
+        <div className="mb-12 lg:mb-16">
+          <h1 className="gsap-search-left text-4xl sm:text-5xl md:text-[5.5rem] font-medium tracking-tight mb-6 md:mb-8 text-text-main leading-[1.05]">
             Indian Medical Database
           </h1>
-          <p className="gsap-search-left text-xl md:text-2xl text-text-muted font-medium leading-relaxed max-w-xl">
+          <p className="gsap-search-left text-lg sm:text-xl md:text-2xl text-text-muted font-medium leading-relaxed max-w-xl">
             Instantly lookup medicines, map generic substitutes, and view side-effects using our zero-latency search index.
           </p>
         </div>
@@ -77,7 +121,7 @@ export default function MedicineSearch() {
             <input
               type="text"
               placeholder="Search by name or uses..."
-              className="w-full py-6 bg-transparent text-text-main focus:outline-none placeholder:text-text-muted/40 text-3xl md:text-4xl font-black tracking-tight"
+              className="w-full py-4 md:py-6 bg-transparent text-text-main focus:outline-none placeholder:text-text-muted/40 text-2xl sm:text-3xl md:text-4xl font-black tracking-tight"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               autoFocus
@@ -150,31 +194,32 @@ export default function MedicineSearch() {
               <li key={med._id}>
                 <Link
                   href={`/medicine/${med._id}-${med.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
-                  className="block p-8 rounded-3xl border-2 border-text-main bg-transparent hover:bg-surface-hover shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[4px] hover:translate-y-[4px] transition-all group"
+                  onClick={(e) => handleLinkClick(e, `/medicine/${med._id}-${med.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`)}
+                  className="block p-6 md:p-8 rounded-3xl border-2 border-text-main bg-slate-100 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[4px] hover:translate-y-[4px] transition-all group"
                 >
-                  <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 mb-6">
-                    <h3 className="text-3xl font-black text-text-main capitalize group-hover:text-text-muted transition-colors duration-200 tracking-tight">
+                  <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-3 md:gap-4 mb-4 md:mb-6">
+                    <h3 className="text-2xl md:text-3xl font-black text-text-main capitalize transition-colors duration-200 tracking-tight">
                       {med.name}
                     </h3>
                     {med.therapeuticClass && (
-                      <span className="text-xs px-4 py-2 rounded-full bg-surface border-2 border-text-main self-start xl:self-auto font-black text-text-main uppercase tracking-widest shrink-0">
+                      <span className="text-[10px] md:text-xs px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-surface border-2 border-text-main self-start xl:self-auto font-black text-text-main uppercase tracking-widest shrink-0">
                         {med.therapeuticClass}
                       </span>
                     )}
                   </div>
 
-                  {med.substitutes && med.substitutes.length > 0 && (
+                  {med.uses && med.uses.length > 0 && (
                     <div className="mt-6 pt-6 border-t-2 border-border-subtle">
-                      <p className="text-xs font-bold text-text-muted mb-4 uppercase tracking-widest">Generic Substitutes</p>
+                      <p className="text-xs font-bold text-text-muted mb-4 uppercase tracking-widest">Primary Uses</p>
                       <div className="flex flex-wrap gap-3">
-                        {med.substitutes.slice(0, 4).map((sub, idx) => (
+                        {med.uses.slice(0, 4).map((use, idx) => (
                           <span key={idx} className="text-sm px-4 py-2 rounded-full bg-surface border-2 border-border-subtle font-bold text-text-main">
-                            {sub}
+                            {use}
                           </span>
                         ))}
-                        {med.substitutes.length > 4 && (
+                        {med.uses.length > 4 && (
                           <span className="text-sm px-4 py-2 rounded-full bg-transparent border-2 border-transparent font-bold text-text-muted">
-                            +{med.substitutes.length - 4} more
+                            +{med.uses.length - 4} more
                           </span>
                         )}
                       </div>
@@ -186,6 +231,77 @@ export default function MedicineSearch() {
           </ul>
         )}
       </div>
+
+      {/* Profile Dialog Overlay using Portal to break out of stacking context */}
+      {showProfileDialog && mounted && createPortal(
+        <div className="fixed inset-0 z-[9999] bg-bg-main/90 backdrop-blur-md flex items-center justify-center p-4 transition-opacity duration-300 opacity-100 animate-[fadeIn_0.3s_ease-out]">
+          <div className="bg-white border-4 border-text-main rounded-3xl p-6 md:p-12 max-w-lg w-full shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transform transition-all animate-[slideUp_0.4s_ease-out]">
+            <h2 className="text-3xl md:text-4xl font-black mb-3 md:mb-4 text-text-main tracking-tight">One quick question...</h2>
+            <p className="text-sm md:text-base text-text-muted font-medium mb-6 md:mb-8">
+              We&apos;re currently in beta. To help us improve SmartDrugFinder, please let us know a bit about yourself before viewing the details.
+            </p>
+            <form onSubmit={handleProfileSubmit} className="flex flex-col gap-4 md:gap-6">
+              
+              <div className="flex flex-col gap-2">
+                <label className="font-bold text-text-main uppercase tracking-widest text-[10px] md:text-xs">I am a</label>
+                <select 
+                  className="w-full p-3 md:p-4 border-2 border-text-main rounded-xl bg-surface font-medium focus:outline-none focus:ring-2 focus:ring-text-main text-sm md:text-base"
+                  value={formData.profession}
+                  onChange={(e) => setFormData({...formData, profession: e.target.value})}
+                >
+                  <option>Doctor</option>
+                  <option>Pharmacist</option>
+                  <option>Medical Student</option>
+                  <option>Patient / General Public</option>
+                  <option>Other</option>
+                </select>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label className="font-bold text-text-main uppercase tracking-widest text-[10px] md:text-xs">Gender</label>
+                <select 
+                  className="w-full p-3 md:p-4 border-2 border-text-main rounded-xl bg-surface font-medium focus:outline-none focus:ring-2 focus:ring-text-main text-sm md:text-base"
+                  value={formData.gender}
+                  onChange={(e) => setFormData({...formData, gender: e.target.value})}
+                >
+                  <option>Male</option>
+                  <option>Female</option>
+                  <option>Prefer not to say</option>
+                </select>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label className="font-bold text-text-main uppercase tracking-widest text-[10px] md:text-xs">Primary Purpose</label>
+                <select 
+                  className="w-full p-3 md:p-4 border-2 border-text-main rounded-xl bg-surface font-medium focus:outline-none focus:ring-2 focus:ring-text-main text-sm md:text-base"
+                  value={formData.purpose}
+                  onChange={(e) => setFormData({...formData, purpose: e.target.value})}
+                >
+                  <option>Research / Study</option>
+                  <option>Finding Substitutes</option>
+                  <option>Checking Side Effects</option>
+                  <option>General Knowledge</option>
+                </select>
+              </div>
+
+              <button 
+                type="submit" 
+                disabled={submittingProfile}
+                className="mt-2 md:mt-4 w-full bg-text-main text-white py-3 md:py-4 rounded-full text-sm md:text-base font-bold tracking-wide transition-all border-2 border-text-main shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {submittingProfile ? 'Saving...' : 'View Medicine Details'}
+              </button>
+
+            </form>
+          </div>
+          <style dangerouslySetInnerHTML={{__html: `
+            @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+            @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+          `}} />
+        </div>,
+        document.body
+      )}
+
     </div>
   );
 }

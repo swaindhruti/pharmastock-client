@@ -99,7 +99,7 @@ export default function Navbar({ className = '' }: { className?: string }) {
 
         {/* Right Side: Login */}
         <div className="flex items-center">
-          <Link href="/app" className="group flex items-center justify-center gap-2 bg-slate-50 border-2 border-black text-black px-6 py-2.5 rounded-full text-sm font-bold tracking-wide transition-all shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px]">
+          <Link href="/search" className="group flex items-center justify-center gap-2 bg-slate-50 border-2 border-black text-black px-6 py-2.5 rounded-full text-sm font-bold tracking-wide transition-all shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px]">
             SmartDrugFinder
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4 transition-transform duration-300 group-hover:rotate-45">
               <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />

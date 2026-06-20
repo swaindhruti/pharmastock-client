@@ -98,6 +98,13 @@ export async function GET(request: Request) {
       }
     }
 
+    // Track search query for analytics (fire and forget)
+    db.collection('search-analytics').insertOne({ 
+      query: query.toLowerCase(), 
+      isFallback, 
+      timestamp: new Date() 
+    }).catch(e => console.error('Failed to log search:', e));
+
     // Set Edge caching headers so popular searches don't hit the DB continuously
     return new NextResponse(JSON.stringify({ results, isFallback }), {
       status: 200,
