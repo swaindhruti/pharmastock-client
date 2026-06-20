@@ -58,7 +58,7 @@ export default function Home() {
 
           {/* Massive Headline */}
           <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[6.5rem] font-medium tracking-tight mb-8 text-text-main leading-[1.05]">
-            {splitText("Intelligent Search for")} <br className="hidden md:block" /> <span className="text-text-main">{splitText("Indian Healthcare")}</span>
+            Intelligent Search for <br className="hidden md:block" /> <span className="text-text-main">Indian Healthcare</span>
           </h1>
 
           {/* Subtext */}

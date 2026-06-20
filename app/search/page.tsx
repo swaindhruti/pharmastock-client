@@ -1,6 +1,6 @@
 'use client';
 
-import Navbar from '@/components/Navbar';
+import Link from 'next/link';
 import MedicineSearch from '@/components/MedicineSearch';
 import { useRef } from 'react';
 import gsap from 'gsap';
@@ -36,9 +36,17 @@ export default function SearchPage() {
         <div className="absolute inset-0 bg-linear-to-r from-bg-main/80 via-transparent to-transparent" />
       </div>
 
-      <Navbar />
+      <Link 
+        href="/" 
+        className="absolute top-6 left-6 md:top-8 md:left-16 z-[100] bg-white border-2 border-text-main text-text-main px-6 py-2.5 rounded-full text-sm font-bold tracking-wide transition-all shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px] flex items-center gap-2"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+        </svg>
+        Back to Home
+      </Link>
 
-      <main className="w-full h-screen mx-auto px-6 md:px-16 pt-32 pb-16 flex flex-col relative z-10">
+      <main className="w-full h-[100dvh] overflow-hidden mx-auto px-6 md:px-16 pt-20 md:pt-32 pb-4 md:pb-16 flex flex-col relative z-10">
         <MedicineSearch />
       </main>
     </div>

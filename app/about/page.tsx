@@ -50,22 +50,7 @@ export default function About() {
       );
     });
 
-    // Staggered team photos when container scrolls into view
-    gsap.fromTo('.gsap-team-photo',
-      { x: 50, opacity: 0 },
-      {
-        x: 0,
-        opacity: 1,
-        duration: 1.2,
-        stagger: 0.1,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: '.team-container',
-          start: 'top 80%',
-          toggleActions: 'play none none none'
-        }
-      }
-    );
+
   }, { scope: container });
 
   const splitText = (text: string) => {
@@ -122,47 +107,7 @@ export default function About() {
           </div>
         </div>
 
-        {/* Meet the Team */}
-        <div className="mb-32 team-container">
-          <div className="flex justify-between items-end mb-12">
-            <h2 className="gsap-fade-up text-5xl md:text-6xl font-medium tracking-tight">Meet the team</h2>
-            <div className="gsap-fade-up gap-4 hidden sm:flex">
-              <button className="bg-text-main text-white hover:bg-text-main/90 transition-colors w-14 h-14 rounded-full flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /></svg>
-              </button>
-              <button className="bg-text-main text-white hover:bg-text-main/90 transition-colors w-14 h-14 rounded-full flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
-              </button>
-            </div>
-          </div>
-          <div className="flex gap-4 overflow-x-auto pb-8 snap-x no-scrollbar">
-            {/* Team Image Placeholders */}
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="gsap-team-photo min-w-[300px] md:min-w-[400px] h-[250px] md:h-[300px] bg-border-subtle shrink-0 snap-center relative group overflow-hidden rounded-3xl">
-                <div className="absolute inset-0 bg-linear-to-tr from-surface to-border-subtle mix-blend-multiply transition-transform duration-700 group-hover:scale-105"></div>
-              </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Trusted By */}
-        <div className="flex flex-col items-start py-16 mb-32 gap-12 rounded-3xl">
-          <h2 className="gsap-fade-up text-5xl md:text-6xl font-medium tracking-tight">Trusted by leading pharmacies</h2>
-          <div className="flex flex-wrap justify-start gap-6 items-center">
-            <div className="gsap-fade-up bg-text-main text-white px-8 py-4 rounded-full font-bold text-xl md:text-2xl tracking-tight flex items-center justify-center transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px]">
-              Apollo Pharmacy
-            </div>
-            <div className="gsap-fade-up bg-transparent border-2 border-text-main text-text-main hover:bg-surface-hover px-8 py-4 rounded-full font-bold text-xl md:text-2xl tracking-tight flex items-center justify-center transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px]">
-              Netmeds
-            </div>
-            <div className="gsap-fade-up bg-text-main text-white px-8 py-4 rounded-full font-bold text-xl md:text-2xl tracking-tight flex items-center justify-center transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px]">
-              Pharmeasy
-            </div>
-            <div className="gsap-fade-up bg-transparent border-2 border-text-main text-text-main hover:bg-surface-hover px-8 py-4 rounded-full font-bold text-xl md:text-2xl tracking-tight flex items-center justify-center transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px]">
-              1mg
-            </div>
-          </div>
-        </div>
 
         {/* CTA Footer */}
         <div className="gsap-fade-up flex flex-col mb-20 items-start">
