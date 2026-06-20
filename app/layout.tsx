@@ -8,7 +8,7 @@ const faktum = localFont({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://smartdrugfinder.vercel.app"), // Replace with your actual production domain
+  metadataBase: new URL("https://smartdrugfinder.com"),
   title: "SmartDrugFinder - Health Dictionary",
   description: "Explore the most accurate database of Indian medical data.",
   openGraph: {

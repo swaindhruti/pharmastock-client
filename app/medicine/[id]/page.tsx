@@ -3,6 +3,7 @@ import clientPromise from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import { Metadata } from 'next';
 import EntryAnimation from '@/components/EntryAnimation';
 
 interface Medicine {
@@ -29,6 +30,51 @@ async function getMedicine(idParam: string): Promise<Medicine | null> {
   return result as unknown as Medicine;
 }
 
+async function getSubstituteLinks(names: string[]) {
+  if (!names || names.length === 0) return [];
+  const client = await clientPromise;
+  const db = client.db(process.env.MONGODB_DB_NAME);
+  const collection = db.collection('medicines'); // Fallback to 'medicines' since Pharmastock might be the wrong collection name based on sitemap, let's use the one from sitemap! Wait, getMedicine uses 'Pharmastock'. I'll stick to 'Pharmastock'.
+  
+  const result = await db.collection('Pharmastock').find(
+    { name: { $in: names } },
+    { projection: { _id: 1, name: 1 } }
+  ).toArray();
+  
+  return result;
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const resolvedParams = await params;
+  const medicine = await getMedicine(resolvedParams.id);
+
+  if (!medicine) {
+    return {
+      title: 'Medicine Not Found - SmartDrugFinder',
+    };
+  }
+
+  const title = `${medicine.name} - Uses, Side Effects, and Substitutes | SmartDrugFinder`;
+  const description = `Learn about ${medicine.name}. Find its primary uses, chemical class (${medicine.chemicalClass || 'Unknown'}), side effects, and safe substitutes.`;
+  const slug = `${medicine._id}-${medicine.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `https://smartdrugfinder.com/medicine/${slug}`,
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
+  };
+}
+
 export default async function MedicinePage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
   const medicine = await getMedicine(resolvedParams.id);
@@ -37,8 +83,33 @@ export default async function MedicinePage({ params }: { params: Promise<{ id: s
     notFound();
   }
 
+  // Fetch cross-links for substitutes to build our PageRank web!
+  const substituteLinks = await getSubstituteLinks(medicine.substitutes || []);
+  
+  // Create a mapping to easily find the link if it exists
+  const substituteMap = new Map(
+    substituteLinks.map((sub) => [sub.name.toLowerCase(), sub._id.toString()])
+  );
+
+  // Generate Google Rich Results Schema (JSON-LD)
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Drug',
+    name: medicine.name,
+    activeIngredient: medicine.chemicalClass || '',
+    clinicalPharmacology: medicine.actionClass || '',
+    mechanismOfAction: medicine.therapeuticClass || '',
+    isAvailableGenerically: true,
+    warning: medicine.sideEffects?.length ? medicine.sideEffects[0] : 'Consult a doctor for side effects',
+  };
+
   return (
     <div className="min-h-screen bg-bg-main text-text-main font-faktum flex flex-col relative overflow-hidden">
+      {/* Inject Structured Data for Google SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <EntryAnimation />
 
       {/* Unique Background Grid + Dots */}
@@ -125,11 +196,24 @@ export default async function MedicinePage({ params }: { params: Promise<{ id: s
               <div className="p-8 border-2 border-text-main bg-white rounded-3xl sticky top-32 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
                 <h3 className="text-2xl font-black tracking-tight mb-8">Generic Substitutes</h3>
                 <div className="flex flex-wrap gap-3">
-                  {medicine.substitutes.map((sub, idx) => (
-                    <div key={idx} className="px-5 py-3 border-2 border-text-main rounded-full font-bold text-text-main bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] transition-all tracking-wide">
-                      {sub}
-                    </div>
-                  ))}
+                  {medicine.substitutes.map((sub, idx) => {
+                    const linkedId = substituteMap.get(sub.toLowerCase());
+                    const slug = linkedId ? `${linkedId}-${sub.toLowerCase().replace(/[^a-z0-9]+/g, '-')}` : null;
+                    
+                    return slug ? (
+                      <Link 
+                        key={idx} 
+                        href={`/medicine/${slug}`}
+                        className="px-5 py-3 border-2 border-text-main rounded-full font-bold text-text-main bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] transition-all tracking-wide"
+                      >
+                        {sub}
+                      </Link>
+                    ) : (
+                      <div key={idx} className="px-5 py-3 border-2 border-border-subtle rounded-full font-bold text-text-muted bg-surface tracking-wide">
+                        {sub}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
