@@ -10,8 +10,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB_NAME || 'pharmastock');
     
-    // Fetch up to 40,000 top medicines for the sitemap (Next.js limits sitemap to 50k URLs per file)
-    const medicines = await db.collection('medicines')
+    // Fetch up to 40,000 top medicines for the sitemap from Pharmastock collection
+    const medicines = await db.collection('Pharmastock')
       .find({}, { projection: { _id: 1, name: 1, updatedAt: 1 } })
       .limit(40000)
       .toArray();
@@ -33,26 +33,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         changeFrequency: 'daily',
         priority: 1.0,
       },
-      {
-        url: `${baseUrl}/search`,
-        lastModified: new Date(),
-        changeFrequency: 'daily',
-        priority: 0.9,
-      },
-      {
-        url: `${baseUrl}/about`,
-        lastModified: new Date(),
-        changeFrequency: 'monthly',
-        priority: 0.6,
-      },
       ...medicineUrls,
     ];
   } catch (error) {
     console.error('Error generating sitemap:', error);
-    // Return base URLs if DB fails
+    // Return base URL if DB fails
     return [
-      { url: baseUrl, lastModified: new Date(), changeFrequency: 'daily', priority: 1.0 },
-      { url: `${baseUrl}/search`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 }
+      { url: baseUrl, lastModified: new Date(), changeFrequency: 'daily', priority: 1.0 }
     ];
   }
 }

@@ -25,45 +25,48 @@ export default async function AdminDashboard() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-bg-main text-text-main font-faktum flex items-center justify-center p-4 relative overflow-hidden">
+      <div className="min-h-screen bg-[#FDFDFD] text-text-main font-faktum flex items-center justify-center p-4 relative overflow-hidden">
         <EntryAnimation />
-        {/* Unique Background Grid + Dots */}
-        <div className="gsap-bg-pattern absolute inset-0 pointer-events-none z-0">
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#cbd5e1_1px,transparent_1px),linear-gradient(to_bottom,#cbd5e1_1px,transparent_1px)] bg-[size:60px_60px] opacity-50" />
-          <div
-            className="absolute inset-0 bg-[radial-gradient(circle,#94a3b8_2.5px,transparent_2.5px)] bg-[size:60px_60px] opacity-60"
-            style={{ backgroundPosition: "30px 30px" }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-bg-main/30 via-transparent to-bg-main" />
-          <div className="absolute inset-0 bg-gradient-to-r from-bg-main/80 via-transparent to-transparent" />
+        {/* Subtle Background */}
+        <div className="absolute inset-0 pointer-events-none z-0 bg-[#FDFDFD]">
+          <div className="absolute inset-0 bg-[radial-gradient(circle,#F1F5F9_1px,transparent_1px)] bg-[size:40px_40px] opacity-70" />
         </div>
 
         <form
           action={login}
-          className="gsap-hero-element relative z-10 bg-white border-4 border-text-main p-8 md:p-12 rounded-3xl shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] max-w-md w-full flex flex-col gap-6"
+          className="gsap-hero-element relative z-10 bg-surface border border-border-subtle p-10 md:p-12 rounded-3xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.05)] max-w-md w-full flex flex-col gap-6"
         >
-          <h1 className="text-4xl font-black mb-4">Admin Login</h1>
-          <p className="text-text-muted font-medium mb-4">
-            Please log in to view platform analytics.
-          </p>
-          <input
-            name="id"
-            placeholder="Admin ID"
-            className="p-4 border-2 border-text-main rounded-xl focus:outline-none focus:ring-2 font-medium bg-surface"
-            required
-          />
-          <input
-            name="password"
-            type="password"
-            placeholder="Password"
-            className="p-4 border-2 border-text-main rounded-xl focus:outline-none focus:ring-2 font-medium bg-surface"
-            required
-          />
+          <div className="flex flex-col items-center text-center mb-2">
+            <div className="w-16 h-16 rounded-2xl bg-brand/5 flex items-center justify-center mb-4 border border-brand/10">
+              <span className="text-3xl text-brand">🔒</span>
+            </div>
+            <h1 className="text-2xl font-bold tracking-tight">Admin Portal</h1>
+            <p className="text-text-muted font-medium text-sm mt-1">
+              Authenticate to view analytics.
+            </p>
+          </div>
+          
+          <div className="flex flex-col gap-4">
+            <input
+              name="id"
+              placeholder="Admin ID"
+              className="px-4 py-3.5 border border-border-subtle rounded-xl focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand font-medium bg-[#FDFDFD] text-sm transition-all"
+              required
+            />
+            <input
+              name="password"
+              type="password"
+              placeholder="Password"
+              className="px-4 py-3.5 border border-border-subtle rounded-xl focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand font-medium bg-[#FDFDFD] text-sm transition-all"
+              required
+            />
+          </div>
+          
           <button
             type="submit"
-            className="bg-text-main text-white py-4 mt-4 rounded-full font-bold tracking-wide border-2 border-text-main shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] transition-all"
+            className="bg-brand hover:bg-brand-hover text-white py-3.5 mt-2 rounded-xl font-semibold tracking-wide transition-colors shadow-[0_4px_14px_0_rgba(198,40,40,0.2)]"
           >
-            Login
+            Sign In
           </button>
         </form>
       </div>
@@ -118,114 +121,113 @@ export default async function AdminDashboard() {
     .limit(10)
     .toArray();
 
-  const splitText = (text: string) => {
-    return text.split("").map((char, index) => (
-      <span key={index} className="inline-block gsap-letter">
-        {char === " " ? "\u00A0" : char}
-      </span>
-    ));
-  };
-
   return (
-    <div className="min-h-screen bg-bg-main text-text-main font-faktum p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-[#FDFDFD] text-text-main font-faktum p-6 relative overflow-hidden">
       <EntryAnimation />
-      {/* Unique Background Grid + Dots */}
-      <div className="gsap-bg-pattern absolute inset-0 pointer-events-none z-0">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#cbd5e1_1px,transparent_1px),linear-gradient(to_bottom,#cbd5e1_1px,transparent_1px)] bg-[size:60px_60px] opacity-50" />
-        <div
-          className="absolute inset-0 bg-[radial-gradient(circle,#94a3b8_2.5px,transparent_2.5px)] bg-[size:60px_60px] opacity-60"
-          style={{ backgroundPosition: "30px 30px" }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-bg-main/30 via-transparent to-bg-main" />
-        <div className="absolute inset-0 bg-gradient-to-r from-bg-main/80 via-transparent to-transparent" />
+      {/* Subtle Background */}
+      <div className="absolute inset-0 pointer-events-none z-0 bg-[#FDFDFD]">
+        <div className="absolute inset-0 bg-[radial-gradient(circle,#F1F5F9_1.5px,transparent_1.5px)] bg-[size:40px_40px] opacity-80" />
       </div>
 
-      <div className="max-w-[1600px] w-full mx-auto pt-8 relative z-10 flex flex-col xl:flex-row gap-8 xl:gap-12 h-auto xl:h-[calc(100vh-4rem)]">
+      <div className="max-w-[1400px] w-full mx-auto pt-6 relative z-10 flex flex-col xl:flex-row gap-8 xl:gap-10 h-auto xl:h-[calc(100vh-4rem)]">
         
         {/* Left Side: Metrics and Rankings */}
         <div className="w-full xl:w-1/3 flex flex-col gap-6 xl:overflow-y-auto pr-2 pb-12 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none shrink-0">
-          <h1 className="text-5xl font-black mb-4 tracking-tight shrink-0">
-            {splitText("Platform Analytics")}
-          </h1>
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-10 rounded-xl bg-brand/10 text-brand flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+              </svg>
+            </div>
+            <h1 className="text-3xl font-bold tracking-tight">Analytics</h1>
+          </div>
 
           {/* Metric Cards */}
           <div className="grid grid-cols-2 gap-4 shrink-0">
-            <div className="gsap-hero-element bg-white border-4 border-text-main p-6 rounded-3xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] transition-all">
-              <h2 className="text-xs font-bold text-text-muted mb-1 uppercase tracking-widest">Total Profiles</h2>
-              <p className="text-4xl font-black">{totalUsers}</p>
+            <div className="gsap-hero-element bg-surface border border-border-subtle p-5 rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.015)]">
+              <h2 className="text-[10px] font-semibold text-text-muted mb-2 uppercase tracking-widest">Total Profiles</h2>
+              <p className="text-3xl font-bold">{totalUsers}</p>
             </div>
             
-            <div className="gsap-hero-element bg-white border-4 border-text-main p-6 rounded-3xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] transition-all">
-              <h2 className="text-xs font-bold text-text-muted mb-1 uppercase tracking-widest">Weekly Search</h2>
-              <p className="text-4xl font-black text-text-main">{weeklySearches}</p>
+            <div className="gsap-hero-element bg-surface border border-border-subtle p-5 rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.015)]">
+              <h2 className="text-[10px] font-semibold text-text-muted mb-2 uppercase tracking-widest">Weekly Search</h2>
+              <p className="text-3xl font-bold text-brand">{weeklySearches}</p>
             </div>
 
-            <div className="gsap-hero-element bg-white border-4 border-text-main p-6 rounded-3xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] transition-all col-span-2">
-              <h2 className="text-xs font-bold text-text-muted mb-1 uppercase tracking-widest">Monthly Search</h2>
-              <p className="text-4xl font-black text-text-main">{monthlySearches}</p>
+            <div className="gsap-hero-element bg-surface border border-border-subtle p-5 rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.015)] col-span-2 flex items-center justify-between">
+              <div>
+                <h2 className="text-[10px] font-semibold text-text-muted mb-1.5 uppercase tracking-widest">Monthly Search Volume</h2>
+                <p className="text-4xl font-bold">{monthlySearches}</p>
+              </div>
+              <div className="w-14 h-14 rounded-full bg-[var(--color-cream-red)] text-brand flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" />
+                </svg>
+              </div>
             </div>
           </div>
 
           {/* Top Professions */}
-          <div className="gsap-hero-element bg-white border-4 border-text-main p-6 rounded-3xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] shrink-0">
-            <h2 className="text-lg font-black mb-4 tracking-tight">Top Professions</h2>
+          <div className="gsap-hero-element bg-surface border border-border-subtle p-6 rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.015)] shrink-0">
+            <h2 className="text-sm font-bold mb-4 text-text-muted uppercase tracking-wider">Top Professions</h2>
             <div className="flex flex-col gap-3">
               {professionStats.map((stat, idx) => (
-                <div key={idx} className="flex justify-between items-center bg-surface border-2 border-border-subtle p-3 rounded-2xl">
-                  <span className="font-bold text-base">{stat._id}</span>
-                  <span className="bg-text-main text-white px-3 py-1 rounded-full text-xs font-black">{stat.count} Users</span>
+                <div key={idx} className="flex justify-between items-center group">
+                  <span className="font-semibold text-sm">{stat._id}</span>
+                  <span className="bg-bg-main border border-border-subtle text-text-muted group-hover:text-text-main group-hover:border-text-muted/30 px-3 py-1 rounded-full text-[11px] font-semibold transition-colors">{stat.count} Users</span>
                 </div>
               ))}
-              {professionStats.length === 0 && <span className="text-text-muted text-sm font-medium">No data yet.</span>}
+              {professionStats.length === 0 && <span className="text-text-muted text-xs font-medium">No data yet.</span>}
             </div>
           </div>
 
           {/* Top Regions */}
-          <div className="gsap-hero-element bg-white border-4 border-text-main p-6 rounded-3xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] shrink-0">
-            <h2 className="text-lg font-black mb-4 tracking-tight">Top Locations</h2>
+          <div className="gsap-hero-element bg-surface border border-border-subtle p-6 rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.015)] shrink-0">
+            <h2 className="text-sm font-bold mb-4 text-text-muted uppercase tracking-wider">Top Locations</h2>
             <div className="flex flex-col gap-3">
               {locationStats.slice(0,3).map((loc, idx) => (
-                <div key={idx} className="flex justify-between items-center bg-surface border-2 border-border-subtle p-3 rounded-2xl">
-                  <span className="font-bold text-base">{loc._id.state}, <span className="text-text-muted font-medium text-xs">{loc._id.country}</span></span>
-                  <span className="bg-text-main text-white px-3 py-1 rounded-full text-xs font-black">{loc.count} Hits</span>
+                <div key={idx} className="flex justify-between items-center group">
+                  <span className="font-semibold text-sm">{loc._id.state}, <span className="text-text-muted font-medium text-[11px]">{loc._id.country}</span></span>
+                  <span className="bg-bg-main border border-border-subtle text-text-muted group-hover:text-text-main group-hover:border-text-muted/30 px-3 py-1 rounded-full text-[11px] font-semibold transition-colors">{loc.count} Hits</span>
                 </div>
               ))}
-              {locationStats.length === 0 && <span className="text-text-muted text-sm font-medium">No location data yet.</span>}
+              {locationStats.length === 0 && <span className="text-text-muted text-xs font-medium">No location data yet.</span>}
             </div>
           </div>
         </div>
 
         {/* Right Side: Recent Activity Table */}
         <div className="w-full xl:w-2/3 h-[600px] xl:h-full flex flex-col pb-12 xl:pb-0">
-          <div className="gsap-hero-element bg-white border-4 border-text-main rounded-3xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] overflow-hidden flex flex-col h-full">
-            <div className="p-6 lg:p-8 border-b-4 border-text-main bg-slate-50 shrink-0">
-              <h2 className="text-2xl font-black">Recent Activity</h2>
+          <div className="gsap-hero-element bg-surface border border-border-subtle rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] overflow-hidden flex flex-col h-full">
+            <div className="p-6 lg:px-8 lg:py-6 border-b border-border-subtle bg-bg-main shrink-0 flex items-center justify-between">
+              <h2 className="text-lg font-bold">Recent Activity</h2>
+              <span className="px-3 py-1 bg-[var(--color-cream-red)] text-brand text-[10px] font-bold uppercase tracking-wider rounded-md">Live Stream</span>
             </div>
             <div className="overflow-auto flex-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none">
-              <table className="w-full text-left font-medium min-w-[600px]">
-                <thead className="sticky top-0 bg-surface border-b-2 border-border-subtle z-10">
-                  <tr className="uppercase text-xs tracking-widest text-text-muted">
-                    <th className="p-6">Date</th>
-                    <th className="p-6">Profession</th>
-                    <th className="p-6">Purpose</th>
-                    <th className="p-6">Location</th>
-                    <th className="p-6">IP Address</th>
+              <table className="w-full text-left font-medium min-w-[700px] border-collapse">
+                <thead className="sticky top-0 bg-surface z-10 shadow-[0_1px_0_0_var(--color-border-subtle)]">
+                  <tr className="uppercase text-[10px] tracking-wider text-text-muted">
+                    <th className="px-8 py-4 font-semibold">Date</th>
+                    <th className="px-6 py-4 font-semibold">Profession</th>
+                    <th className="px-6 py-4 font-semibold">Purpose</th>
+                    <th className="px-6 py-4 font-semibold">Location</th>
+                    <th className="px-8 py-4 font-semibold text-right">IP Address</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="divide-y divide-border-subtle text-sm">
                   {recentUsers.map((user, idx) => (
-                    <tr key={idx} className="border-b-2 border-border-subtle hover:bg-surface-hover transition-colors">
-                      <td className="p-6 whitespace-nowrap">{new Date(user.createdAt).toLocaleDateString()}</td>
-                      <td className="p-6 font-bold">{user.profession}</td>
-                      <td className="p-6">{user.purpose}</td>
-                      <td className="p-6">{user.city}, {user.region} ({user.countryCode})</td>
-                      <td className="p-6 text-text-muted font-mono text-sm">{user.ip}</td>
+                    <tr key={idx} className="hover:bg-bg-main transition-colors">
+                      <td className="px-8 py-4 whitespace-nowrap text-text-muted text-xs">{new Date(user.createdAt).toLocaleDateString()}</td>
+                      <td className="px-6 py-4 font-semibold text-text-main">{user.profession}</td>
+                      <td className="px-6 py-4 text-text-muted">{user.purpose}</td>
+                      <td className="px-6 py-4 text-text-main">{user.city}, {user.region} <span className="text-xs text-text-muted ml-1">({user.countryCode})</span></td>
+                      <td className="px-8 py-4 text-text-muted font-mono text-[11px] text-right">{user.ip}</td>
                     </tr>
                   ))}
                   {recentUsers.length === 0 && (
                     <tr>
-                      <td colSpan={5} className="p-12 text-center text-text-muted">
-                        No analytics data yet. Wait for users to fill the form.
+                      <td colSpan={5} className="p-12 text-center text-text-muted text-sm">
+                        No analytics data yet. Wait for users to interact with the platform.
                       </td>
                     </tr>
                   )}

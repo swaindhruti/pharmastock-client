@@ -9,11 +9,11 @@ const faktum = localFont({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://smartdrugfinder.com"),
-  title: "SmartDrugFinder - Health Dictionary",
-  description: "Explore the most accurate database of Indian medical data.",
+  title: "SmartDrugFinder - Indian Medicine Database & Drug Discovery",
+  description: "Explore Indian medicines, active compositions, pharmaceutical brands, generic substitutes, and side effects with zero-latency search.",
   openGraph: {
-    title: "SmartDrugFinder - Health Dictionary",
-    description: "Explore the most accurate database of Indian medical data.",
+    title: "SmartDrugFinder - Indian Medicine Database & Drug Discovery",
+    description: "Explore Indian medicines, active compositions, pharmaceutical brands, generic substitutes, and side effects with zero-latency search.",
     url: "/",
     siteName: "SmartDrugFinder",
     images: [
@@ -29,8 +29,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "SmartDrugFinder - Health Dictionary",
-    description: "Explore the most accurate database of Indian medical data.",
+    title: "SmartDrugFinder - Indian Medicine Database & Drug Discovery",
+    description: "Explore Indian medicines, active compositions, pharmaceutical brands, generic substitutes, and side effects with zero-latency search.",
     images: ["/og-image.png"],
   },
 };
