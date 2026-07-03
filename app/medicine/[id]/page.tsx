@@ -131,39 +131,15 @@ export default async function MedicinePage({ params }: { params: Promise<{ id: s
             )}
           </div>
 
-          {/* Quick Facts Dashboard */}
-          {(medicine.manufacturer || medicine.form || medicine.composition) && (
-            <div className="grid grid-cols-2 gap-2 mb-6">
-              {medicine.manufacturer && (
-                <div className="p-3 bg-surface border border-border-subtle rounded-xl flex flex-col">
-                  <span className="font-medium text-text-muted text-[10px] uppercase tracking-wider mb-0.5">Brand</span>
-                  <span className="text-[13px] font-semibold text-text-main capitalize leading-tight">{medicine.manufacturer}</span>
-                </div>
-              )}
-              {medicine.form && (
-                <div className="p-3 bg-surface border border-border-subtle rounded-xl flex flex-col">
-                  <span className="font-medium text-text-muted text-[10px] uppercase tracking-wider mb-0.5">Form</span>
-                  <span className="text-[13px] font-semibold text-text-main capitalize leading-tight">{medicine.form}</span>
-                </div>
-              )}
-              {medicine.composition && (
-                <div className="p-3 bg-surface border border-border-subtle rounded-xl flex flex-col col-span-2">
-                  <span className="font-medium text-brand text-[10px] uppercase tracking-wider mb-0.5">Composition</span>
-                  <span className="text-[13px] font-semibold text-text-main capitalize leading-relaxed">{medicine.composition}</span>
-                </div>
-              )}
-            </div>
-          )}
-
           <div className="space-y-4">
-            {/* Uses */}
+            {/* Primary Uses */}
             {medicine.uses && medicine.uses.length > 0 && (
-              <section className="bg-surface border border-border-subtle rounded-2xl p-4">
-                <h2 className="text-sm font-bold text-text-main mb-3">Primary Uses</h2>
-                <ul className="space-y-2">
+              <section className="bg-surface border border-border-subtle rounded-2xl p-5 shadow-[0_2px_10px_rgba(0,0,0,0.015)]">
+                <h2 className="text-base font-bold text-text-main mb-3">Primary Uses</h2>
+                <ul className="space-y-3">
                   {medicine.uses.map((use, idx) => (
-                    <li key={idx} className="text-xs font-medium text-text-muted flex items-start gap-2">
-                      <span className="text-border-subtle mt-1">•</span>
+                    <li key={idx} className="text-[15px] font-semibold text-text-main flex items-start gap-3">
+                      <span className="text-brand mt-0.5">•</span>
                       <span className="leading-relaxed">{use}</span>
                     </li>
                   ))}
@@ -171,25 +147,37 @@ export default async function MedicinePage({ params }: { params: Promise<{ id: s
               </section>
             )}
 
-            {/* Side Effects */}
-            {medicine.sideEffects && medicine.sideEffects.length > 0 && (
-              <section className="bg-surface border border-border-subtle rounded-2xl p-4">
-                <h2 className="text-sm font-bold text-text-main mb-3">Side Effects</h2>
-                <div className="flex flex-wrap gap-2">
-                  {medicine.sideEffects.map((effect, idx) => (
-                    <div key={idx} className="px-2.5 py-1.5 bg-bg-main border border-border-subtle rounded-md text-[10px] font-medium text-text-muted">
-                      {effect}
-                    </div>
-                  ))}
-                </div>
+            {/* Composition */}
+            {medicine.composition && (
+              <section className="bg-surface border border-border-subtle rounded-2xl p-5 shadow-[0_2px_10px_rgba(0,0,0,0.015)]">
+                <h2 className="text-xs font-bold text-brand uppercase tracking-widest mb-2">Composition</h2>
+                <p className="text-[15px] font-bold text-text-main leading-relaxed capitalize">{medicine.composition}</p>
+              </section>
+            )}
+
+            {/* Manufacturer & Form */}
+            {(medicine.manufacturer || medicine.form) && (
+              <section className="grid grid-cols-2 gap-3">
+                {medicine.manufacturer && (
+                  <div className="bg-surface border border-border-subtle rounded-2xl p-5 shadow-[0_2px_10px_rgba(0,0,0,0.015)]">
+                    <h2 className="text-[11px] font-bold text-text-muted uppercase tracking-widest mb-1.5">Manufacturer</h2>
+                    <p className="text-[15px] font-bold text-text-main capitalize">{medicine.manufacturer}</p>
+                  </div>
+                )}
+                {medicine.form && (
+                  <div className="bg-surface border border-border-subtle rounded-2xl p-5 shadow-[0_2px_10px_rgba(0,0,0,0.015)]">
+                    <h2 className="text-[11px] font-bold text-text-muted uppercase tracking-widest mb-1.5">Form</h2>
+                    <p className="text-[15px] font-bold text-text-main capitalize">{medicine.form}</p>
+                  </div>
+                )}
               </section>
             )}
 
             {/* Substitutes */}
             {medicine.substitutes && medicine.substitutes.length > 0 && (
-              <section className="bg-surface border border-border-subtle rounded-2xl p-4">
-                <h2 className="text-sm font-bold text-text-main mb-3">Generic Substitutes</h2>
-                <div className="flex flex-col gap-2">
+              <section className="bg-surface border border-border-subtle rounded-2xl p-5 shadow-[0_2px_10px_rgba(0,0,0,0.015)]">
+                <h2 className="text-base font-bold text-text-main mb-4">Generic Substitutes</h2>
+                <div className="flex flex-col gap-3">
                   {medicine.substitutes.map((sub, idx) => {
                     const linkedId = substituteMap.get(sub.toLowerCase());
                     const slug = linkedId ? `${linkedId}-${sub.toLowerCase().replace(/[^a-z0-9]+/g, '-')}` : null;
@@ -198,19 +186,33 @@ export default async function MedicinePage({ params }: { params: Promise<{ id: s
                       <Link 
                         key={idx} 
                         href={`/medicine/${slug}`}
-                        className="p-3 border border-border-subtle hover:border-brand rounded-lg text-xs font-semibold text-text-main bg-bg-main flex items-center justify-between group transition-colors"
+                        className="p-4 border-2 border-border-subtle hover:border-brand rounded-xl text-[15px] font-bold text-text-main bg-bg-main flex items-center justify-between group transition-all hover:shadow-[0_4px_12px_rgba(198,40,40,0.1)]"
                       >
                         <span className="capitalize">{sub}</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5 text-text-muted group-hover:text-brand transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-4 h-4 text-text-muted group-hover:text-brand transition-colors">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                         </svg>
                       </Link>
                     ) : (
-                      <div key={idx} className="p-3 border border-border-subtle/40 rounded-lg text-xs font-semibold text-text-muted bg-bg-main/50 flex items-center justify-between">
+                      <div key={idx} className="p-4 border-2 border-border-subtle/50 rounded-xl text-[15px] font-bold text-text-muted bg-bg-main/50 flex items-center justify-between">
                         <span className="capitalize">{sub}</span>
                       </div>
                     );
                   })}
+                </div>
+              </section>
+            )}
+
+            {/* Side Effects */}
+            {medicine.sideEffects && medicine.sideEffects.length > 0 && (
+              <section className="bg-surface border border-border-subtle rounded-2xl p-5 shadow-[0_2px_10px_rgba(0,0,0,0.015)]">
+                <h2 className="text-sm font-bold text-text-main mb-3">Side Effects</h2>
+                <div className="flex flex-wrap gap-2.5">
+                  {medicine.sideEffects.map((effect, idx) => (
+                    <div key={idx} className="px-3 py-1.5 bg-bg-main border-2 border-border-subtle rounded-lg text-xs font-bold text-text-muted">
+                      {effect}
+                    </div>
+                  ))}
                 </div>
               </section>
             )}

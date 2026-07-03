@@ -30,6 +30,72 @@ const BRANDS = [
   { name: "Sun Pharma", value: "Sun Pharma" },
 ];
 
+function CustomFormSelect({ label, value, options, onChange }: { label: string, value: string, options: string[], onChange: (val: string) => void }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  return (
+    <div className={`flex flex-col gap-1.5 relative ${isOpen ? "z-[100]" : "z-10"}`} ref={ref}>
+      <label className="font-semibold text-text-muted text-[12px] uppercase tracking-wider">
+        {label}
+      </label>
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className={`w-full flex items-center justify-between p-3.5 border-2 rounded-xl bg-bg-main text-[14px] text-left transition-all ${
+          isOpen 
+            ? "border-brand shadow-[0_0_0_4px_rgba(198,40,40,0.1)] text-text-main" 
+            : "border-border-subtle hover:border-text-muted/30 text-text-main shadow-[0_2px_8px_rgba(0,0,0,0.01)]"
+        }`}
+      >
+        <span className="font-semibold">{value}</span>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className={`w-4 h-4 transition-transform duration-200 ${isOpen ? "rotate-180 text-brand" : "text-text-muted"}`}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+        </svg>
+      </button>
+      
+      {isOpen && (
+        <div className="absolute top-[calc(100%+6px)] left-0 right-0 bg-bg-main border border-border-subtle rounded-xl shadow-[0_16px_40px_-10px_rgba(0,0,0,0.15)] overflow-hidden animate-[fadeIn_0.1s_ease-out]">
+          <div className="max-h-56 overflow-y-auto scrollbar-none py-1.5">
+            {options.map((opt) => (
+              <button
+                key={opt}
+                type="button"
+                onClick={() => {
+                  onChange(opt);
+                  setIsOpen(false);
+                }}
+                className={`w-full text-left px-4 py-3 text-[14px] transition-colors flex items-center justify-between ${
+                  value === opt
+                    ? "text-brand font-bold bg-brand/5"
+                    : "text-text-main font-medium hover:bg-surface"
+                }`}
+              >
+                <span>{opt}</span>
+                {value === opt && (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-brand">
+                    <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
+                  </svg>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function MedicineSearch() {
   const [searchTerm, setSearchTerm] = useState("");
   const [results, setResults] = useState<Medicine[]>([]);
@@ -38,8 +104,16 @@ export default function MedicineSearch() {
   const [mounted, setMounted] = useState(false);
   const [selectedBrand, setSelectedBrand] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showSplash, setShowSplash] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const splashTimer = setTimeout(() => {
+      setShowSplash(false);
+    }, 3000);
+    return () => clearTimeout(splashTimer);
+  }, []);
 
   useEffect(() => {
     setMounted(true);
@@ -180,6 +254,51 @@ export default function MedicineSearch() {
     { scope: containerRef, dependencies: [results, loading] },
   );
 
+  if (showSplash) {
+    return (
+      <div className="w-full h-[100dvh] flex flex-col items-center justify-center font-faktum relative bg-[#F8FAFC] overflow-hidden text-text-main animate-[fadeOut_0.5s_ease-in-out_2.5s_forwards]">
+        <div className="relative w-40 h-40 flex items-center justify-center animate-[fadeIn_0.5s_ease-out]">
+          {/* Glow behind */}
+          <div className="absolute inset-0 bg-brand/5 blur-2xl rounded-full scale-150 animate-pulse"></div>
+
+          {/* Floating Elements */}
+          <div className="absolute top-2 left-4 animate-[float_4s_ease-in-out_infinite] text-brand/40">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2h6z"/></svg>
+          </div>
+          <div className="absolute bottom-6 right-2 animate-[float_5s_ease-in-out_infinite_1s] text-text-muted/30">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5"><path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2h6z"/></svg>
+          </div>
+          <div className="absolute top-8 right-6 animate-[float_3.5s_ease-in-out_infinite_0.5s] w-2.5 h-2.5 rounded-full bg-[var(--color-cream-red-text)] opacity-40"></div>
+          <div className="absolute bottom-8 left-6 animate-[float_4.5s_ease-in-out_infinite_1.5s] w-1.5 h-1.5 rounded-full bg-text-muted opacity-30"></div>
+          
+          {/* Main Animated Capsule Container */}
+          <div className="relative animate-[float_6s_ease-in-out_infinite] z-10">
+            <div className="w-20 h-20 bg-surface rounded-3xl shadow-[0_10px_40px_-10px_rgba(198,40,40,0.15)] border border-border-subtle flex items-center justify-center rotate-12 transition-transform hover:rotate-0 hover:scale-110 duration-500">
+               <svg viewBox="0 0 32 16" className="w-12 h-6 -rotate-45">
+                 <path d="M16 0 L8 0 A8 8 0 0 0 8 16 L16 16 Z" fill="#C62828" />
+                 <path d="M16 0 L24 0 A8 8 0 0 1 24 16 L16 16 Z" fill="#F87171" />
+               </svg>
+            </div>
+          </div>
+        </div>
+        
+        <h2 className="mt-8 text-text-main font-bold text-[22px] tracking-wider animate-[fadeIn_0.5s_ease-out_0.2s_both]">SmartDrugFinder</h2>
+        <p className="text-text-muted text-[14px] font-medium mt-2 animate-[fadeIn_0.5s_ease-out_0.4s_both]">Loading database...</p>
+
+        <style dangerouslySetInnerHTML={{__html: `
+          @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+          }
+          @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+          }
+        `}} />
+      </div>
+    );
+  }
+
   return (
     <div
       ref={containerRef}
@@ -201,10 +320,16 @@ export default function MedicineSearch() {
               hasActiveSearch ? "h-0 opacity-0 overflow-hidden mb-0" : "h-auto opacity-100 mb-8"
             }`}
           >
-            <h1 className="font-bold text-3xl tracking-tight text-text-main mb-1.5">
-              SmartDrugFinder
-            </h1>
-            <p className="text-sm text-text-muted font-medium">
+            <div className="flex items-center justify-center mb-1.5">
+              <svg viewBox="0 0 32 16" className="w-10 h-5 mr-3 rotate-45">
+                <path d="M16 0 L8 0 A8 8 0 0 0 8 16 L16 16 Z" fill="#C62828" />
+                <path d="M16 0 L24 0 A8 8 0 0 1 24 16 L16 16 Z" fill="#F87171" />
+              </svg>
+              <h1 className="font-bold text-[26px] tracking-wider text-text-main">
+                SmartDrugFinder
+              </h1>
+            </div>
+            <p className="text-sm text-text-muted font-medium tracking-wide">
               Zero-Latency Medicine Database
             </p>
           </div>
@@ -224,7 +349,7 @@ export default function MedicineSearch() {
               </svg>
               <input
                 type="text"
-                placeholder="Search by name or uses..."
+                placeholder="Search for a drug by name or use..."
                 className="w-full py-2.5 px-3 bg-transparent text-text-main focus:outline-none placeholder:text-text-muted/60 text-[15px] font-medium"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -288,18 +413,20 @@ export default function MedicineSearch() {
           
           {/* Landing State Info */}
           {!hasActiveSearch && (
-            <div className="mt-8 flex flex-col gap-4">
-              <div className="gsap-landing-item bg-surface border border-border-subtle p-5 rounded-2xl flex flex-col gap-1.5 shadow-[0_2px_10px_rgba(0,0,0,0.015)]">
-                <h3 className="text-text-main font-semibold text-[15px]">2.5L+ Drugs Database</h3>
-                <p className="text-[13px] text-text-muted leading-relaxed">Extensive directory for retailers and healthcare professionals.</p>
-              </div>
-              <div className="gsap-landing-item bg-surface border border-border-subtle p-5 rounded-2xl flex flex-col gap-1.5 shadow-[0_2px_10px_rgba(0,0,0,0.015)]">
-                <h3 className="text-text-main font-semibold text-[15px]">Find Substitutes Fast</h3>
-                <p className="text-[13px] text-text-muted leading-relaxed">Check generic maps and alternative brands seamlessly.</p>
-              </div>
-              <div className="gsap-landing-item bg-surface border border-border-subtle p-5 rounded-2xl flex flex-col gap-1.5 shadow-[0_2px_10px_rgba(0,0,0,0.015)]">
-                <h3 className="text-text-main font-semibold text-[15px]">Top Manufacturers</h3>
-                <p className="text-[13px] text-text-muted leading-relaxed">Data sourced straight from Cipla, Lupin, Mankind & more.</p>
+            <div className="mt-8 flex flex-col gap-6">
+              <div className="flex flex-wrap justify-center gap-2.5">
+                <div className="px-3.5 py-2 bg-surface border border-border-subtle rounded-full text-[11px] font-semibold text-text-main flex items-center gap-2 shadow-[0_2px_8px_rgba(0,0,0,0.01)] gsap-landing-item uppercase tracking-wider">
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand"></span> 2.5L+ Drugs Database
+                </div>
+                <div className="px-3.5 py-2 bg-surface border border-border-subtle rounded-full text-[11px] font-semibold text-text-main flex items-center gap-2 shadow-[0_2px_8px_rgba(0,0,0,0.01)] gsap-landing-item uppercase tracking-wider">
+                  <span className="w-1.5 h-1.5 rounded-full bg-text-main"></span> Find Substitutes
+                </div>
+                <div className="px-3.5 py-2 bg-surface border border-border-subtle rounded-full text-[11px] font-semibold text-text-main flex items-center gap-2 shadow-[0_2px_8px_rgba(0,0,0,0.01)] gsap-landing-item uppercase tracking-wider">
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand"></span> Top Manufacturers
+                </div>
+                <Link href="/contact" className="px-3.5 py-2 bg-surface border border-border-subtle rounded-full text-[11px] font-semibold text-text-main flex items-center gap-2 shadow-[0_2px_8px_rgba(0,0,0,0.01)] gsap-landing-item uppercase tracking-wider hover:border-brand/30 transition-colors">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span> Contact Support
+                </Link>
               </div>
             </div>
           )}
@@ -397,37 +524,24 @@ export default function MedicineSearch() {
                 Help us personalize your search experience.
               </p>
               <form onSubmit={handleProfileSubmit} className="flex flex-col gap-4">
-                <div className="flex flex-col gap-1.5">
-                  <label className="font-semibold text-text-muted text-[11px] uppercase tracking-wider">
-                    Role
-                  </label>
-                  <select
-                    className="w-full p-3 border border-border-subtle rounded-xl bg-surface text-text-main focus:outline-none focus:border-brand text-sm"
-                    value={formData.profession}
-                    onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
-                  >
-                    <option>Retailer / Shopkeeper</option>
-                    <option>Pharmacist</option>
-                    <option>Doctor</option>
-                    <option>Medical Student</option>
-                    <option>Patient / General Public</option>
-                  </select>
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <label className="font-semibold text-text-muted text-[11px] uppercase tracking-wider">
-                    Purpose
-                  </label>
-                  <select
-                    className="w-full p-3 border border-border-subtle rounded-xl bg-surface text-text-main focus:outline-none focus:border-brand text-sm"
-                    value={formData.purpose}
-                    onChange={(e) => setFormData({ ...formData, purpose: e.target.value })}
-                  >
-                    <option>Finding Substitutes</option>
-                    <option>Stock Verification</option>
-                    <option>Research / Study</option>
-                    <option>General Knowledge</option>
-                  </select>
-                </div>
+                <CustomFormSelect
+                  label="Role"
+                  value={formData.profession}
+                  options={["Retailer / Shopkeeper", "Pharmacist", "Doctor", "Medical Student", "Patient / General Public"]}
+                  onChange={(val) => setFormData({ ...formData, profession: val })}
+                />
+                <CustomFormSelect
+                  label="Gender"
+                  value={formData.gender}
+                  options={["Male", "Female", "Other", "Prefer not to say"]}
+                  onChange={(val) => setFormData({ ...formData, gender: val })}
+                />
+                <CustomFormSelect
+                  label="Purpose"
+                  value={formData.purpose}
+                  options={["Finding Substitutes", "Stock Verification", "Research / Study", "General Knowledge"]}
+                  onChange={(val) => setFormData({ ...formData, purpose: val })}
+                />
                 <button
                   type="submit"
                   disabled={submittingProfile}
